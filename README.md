@@ -18,7 +18,7 @@ For suggestions to work you have two parts. First, the unibox.js and unibox.css 
 ```javascript
 // create a settings object
 var settings = {
-  // these are the required:
+  // these are required:
   suggestUrl: '', // the URL that provides the data for the suggest
   // these are optional:
   throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
@@ -59,4 +59,4 @@ On the server side create code in whatever language you want. The URL of the ser
  
 }
 ```
-
+That's it already. If you use unibox and want to let me know, I include your usage example here. Happy coding.

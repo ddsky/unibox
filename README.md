@@ -7,7 +7,7 @@ A Javascript jQuery Plugin for a universal search box with search suggestion.
 
 Example on the [best recipe search engine spoonacular.com](http://spoonacular.com):
 
-![unibox on spoonacular][img/unibox-on-spoonacular.png]
+![][https://github.com/ddsky/unibox/blob/master/img/unibox-on-spoonacular.png?raw=true "unibox on spoonacular"]
 
 ## Configuration and Usage
 

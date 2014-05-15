@@ -68,11 +68,7 @@ var UniBox = function() {
         if (event !== undefined) {
 			
 			var inputText = searchBox.val();
-        
-			// write selected text in search box when enter is pressed
-            if (event.keyCode == 13) {
-                //$(PowerSearchBox.inputBoxId).value = selectedEntryText;
-            }
+
             // hide if tab or enter was pressed
             if (event.keyCode == 9 || event.keyCode == 13 || inputText.length < minChars) {
                 suggestBox.slideUp(animationSpeed);
@@ -124,7 +120,7 @@ var UniBox = function() {
     // update suggest box when new data is given
     function updateSuggestBox(data){
 		
-		data = JSON.parse(data);
+		//data = JSON.parse(data);
 		//console.log(data);
 		
 		var searchString = searchBox.val();
@@ -241,9 +237,9 @@ var UniBox = function() {
         var inputText = searchBox.val();
         
 		if (inputText.length >= minChars) {
-			$.get(suggestUrl+encodeURIComponent(inputText), function(data) {
+			$.ajax(suggestUrl+encodeURIComponent(inputText),{dataType:'json', success: function(data) {
 				 updateSuggestBox(data);
-			});
+			}});
 		}
        
     }

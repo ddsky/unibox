@@ -13,7 +13,7 @@
 			throttleTime: 300,
 			animationSpeed: 300,
 			enterCallback: undefined,
-			minChars: 2,
+			minChars: 3,
 			maxWidth: searchBox.outerWidth()
         }, options);
 		
@@ -61,6 +61,9 @@ var UniBox = function() {
 	
 	// the action that should happen if enter is pressed
 	var enterCallback;
+
+	// the words that were highlighted above the search bar
+	var ivfWords = [];
 	
     // hide the search suggests
     function hideSuggestBox(event) {
@@ -74,10 +77,12 @@ var UniBox = function() {
                 suggestBox.slideUp(animationSpeed);
 				selectedEntryIndex = -1;
             }
+
         } else {
             suggestBox.slideUp(animationSpeed);
-			selectedEntryIndex = -1;
+			selectedEntryIndex = -1;			
         }
+
 		
     }
 	
@@ -166,32 +171,70 @@ var UniBox = function() {
 		if (data['words'].length > 0 && queryVisualizationHeadline.length > 0) {
 			suggestBox.append('<h4>'+queryVisualizationHeadline+'</h4>');
 		}
+		
 		$.each(data['words'], function(key, word) {
+
+			//console.log(word);
+			//console.log(ivfWords);
+
 			if (word['overlayImage'] != undefined) {
 				suggestBox.append('<img class="unibox-vis" src="'+word['overlayImage'] +'" style="background-image: url(\''+word['image']+'\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');				
 			} else {
 				suggestBox.append('<img class="unibox-vis" src="'+word['image']+'">');
 			}
+
+			var invisibleBox = $('#unibox-invisible');
+			invisibleBox.html(searchString.replace(new RegExp(word['name'],'gi'),'<span>'+word['name']+'</span>'));
+
+			// show visuals above search bar
+			if (jQuery.inArray(word['image'], ivfWords) == -1) {
+	
+				var posLeft =  $('#unibox-invisible span').position().left;
+				//console.log(posLeft);
+
+				visImage = $('<div class="unibox-ivf"><img src="'+word['image']+'"></div>');
+				visImage.css('left', searchBox.offset().left + posLeft - 10);
+				visImage.css('top', searchBox.offset().top - 80);
+		        $('body').append(visImage);
+		        setTimeout(function() {$('.unibox-ivf').find('img').addClass('l'); }, 10);	
+
+		        //visImage.find('img').addClass('l');
+		        ivfWords.push(word['image']);		        
+			}			
+
 		});
 		
 		//// position it
-		suggestBox.css('position','absolute');
 		suggestBox.css('left',searchBox.offset().left);
-		suggestBox.css('top',searchBox.offset().top+searchBox.height());
+		suggestBox.css('top',searchBox.offset().top+searchBox.outerHeight());
 		
 		//// show it
-		suggestBox.slideDown(animationSpeed);
-		
+		suggestBox.slideDown(animationSpeed, function() {
+			//// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
+			suggestBox.css('left',searchBox.offset().left);
+			suggestBox.css('top',searchBox.offset().top+searchBox.outerHeight());
+		});
+
 		//// update selectables for cursor navigation 
 		selectables = $('.unibox-selectable');
 		selectedEntryIndex = -1;
 		
     }
     
+    function clearIvf() {
+		ivfWords = [];
+		$('.unibox-ivf').remove();
+    }
+
     function scrollList(event) {
 		
 		// return if NOT up or down is pressed
 		if (event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 13) {
+			
+			if (event.keyCode == 46 || event.keyCode == 8) {
+				clearIvf();
+			}
+
 			return;
 		}
 		
@@ -214,11 +257,15 @@ var UniBox = function() {
 		
 		}
 		
-		if (event.keyCode == 13 && selectedEntryIndex != -1) {
+		if (event.keyCode == 13) {
 			
 			if (enterCallback != undefined) {
-				enterCallback();				
-			} else {
+				var selectedText = searchBox.val();
+				if (selectedEntryIndex != -1) {
+					selectedText = $($('.unibox-selectable.active')[0]).text();
+				}
+				enterCallback(selectedText);				
+			} else if (selectedEntryIndex != -1) {
 				window.location.href = $($('.unibox-selectable.active')[0]).find('a').attr('href');
 			}
 			
@@ -230,7 +277,7 @@ var UniBox = function() {
     function searchSuggest(event) {
 
 		// scroll list when up or down is pressed
-		if (event.keyCode == 38 || event.keyCode == 40) {
+		if (event.keyCode == 38 || event.keyCode == 40 || event.keyCode == 13) {
 			return;
 		}
 		
@@ -262,7 +309,7 @@ var UniBox = function() {
 			// position and size the suggest box
             suggestBox = $('<div id="unibox-suggest-box"></div>');
 			$('body').append(suggestBox);
-			suggestBox.css('min-width',searchBox.outerWidth());
+			suggestBox.css('min-width', searchBox.outerWidth());
 			suggestBox.css('max-width', options.maxWidth);
 						
             // add event listeners
@@ -280,6 +327,11 @@ var UniBox = function() {
 			    event.stopPropagation();
 			});
 			
+
+			// copy search box styles to an invisible element so we can determine the text width
+			var invisible = $('<div id="unibox-invisible">text whatever <span>this one</span></div>');
+			searchBox.parent().append(invisible);
+
 			console.log('unibox initialized');
         }
     }

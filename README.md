@@ -9,6 +9,10 @@ Example on the [best recipe search engine spoonacular.com](http://spoonacular.co
 
 ![](https://github.com/ddsky/unibox/blob/master/img/unibox-on-spoonacular.png?raw=true "unibox on spoonacular")
 
+## Installation
+
+Download the unibox.min.js and unibox.css or simply install via bower writing `bower install unibox`.
+
 ## Configuration and Usage
 
 For suggestions to work you have two parts. First, the unibox.js and unibox.css need to be included and configured on the page. Second, the server needs to give search suggest data for the plugin to show.

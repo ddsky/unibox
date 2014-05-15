@@ -1,0 +1,39 @@
+{
+  "name": "unibox",
+  "version": "1.0.0",
+  "main": [
+    "./js/unibox.min.js",
+    "./css/unibox.css"
+  ],
+  "ignore": [
+    "**/.*",
+    ".git",
+    "img",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "latest"
+  },
+  "homepage": "https://github.com/ddsky/unibox",
+  "authors": [
+    "David Urbansky <davidurbansky@gmail.com>"
+  ],
+  "description": "A jQuery search suggest plugin.",
+  "keywords": [
+    "jQuery",
+    "search",
+    "suggest",
+    "search",
+    "suggest",
+    "javascript",
+    "unibox",
+    "search",
+    "bar",
+    "search",
+    "box"
+  ],
+  "license": "MIT"
+}

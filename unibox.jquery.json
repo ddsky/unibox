@@ -1,12 +1,12 @@
 {
     "name": "unibox",
-    "title": "A powerful search suggestion input box.",
-    "description": "jQuery plugin for support of search suggestion and instant visual feedback.",
+    "title":       "unibox - search suggestion",
+    "description": "A powerful search suggestion input box.",
     "keywords": [
         "search",
         "suggestion"
     ],
-    "version": "1.2.0",
+    "version": "1.2.1",
     "author": {
         "name": "David Urbansky",
         "url": "https://github.com/ddsky/unibox"

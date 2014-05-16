@@ -202,11 +202,9 @@ var UniBox = function() {
 			// show visuals above search bar
 			if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'top') && jQuery.inArray(word['image'], ivfWords) == -1) {
 	
-				var span =  $('#unibox-invisible span');
+				var span =  $('#unibox-invisible span')[0];
 				if (span != undefined && word['name'].length > 0) {
-					var posLeft = $('#unibox-invisible span').position().left;
-				
-					console.log(posLeft);
+					var posLeft = $(span).position().left;
 
 					visImage = $('<div class="unibox-ivf"><img src="'+word['image']+'" alt="'+word['name']+'"></div>');
 					visImage.css('left', searchBox.offset().left + posLeft - 10);

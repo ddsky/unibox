@@ -12,6 +12,7 @@
 			highlight: true,
 			throttleTime: 300,
 			animationSpeed: 300,
+			instantVisualFeedback: 'all',
 			enterCallback: undefined,
 			minChars: 3,
 			maxWidth: searchBox.outerWidth()
@@ -65,6 +66,9 @@ var UniBox = function() {
 	// the words that were highlighted above the search bar
 	var ivfWords = [];
 	
+	// where to show the ivf
+	var instantVisualFeedback = 'all';
+
     // hide the search suggests
     function hideSuggestBox(event) {
 		
@@ -166,9 +170,16 @@ var UniBox = function() {
 			});
 			
 	    });
+
+	    // click handler on selectables
+		$('.unibox-selectable').click(function() {
+			searchBox.val($(this).text());			
+			enterCallback($(this).text());	
+			hideSuggestBox();		
+		});
 		
 		// trigger words / visualization
-		if (data['words'].length > 0 && queryVisualizationHeadline.length > 0) {
+		if (data['words'].length > 0 && queryVisualizationHeadline.length > 0 && (instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
 			suggestBox.append('<h4>'+queryVisualizationHeadline+'</h4>');
 		}
 		
@@ -177,33 +188,43 @@ var UniBox = function() {
 			//console.log(word);
 			//console.log(ivfWords);
 
-			if (word['overlayImage'] != undefined) {
-				suggestBox.append('<img class="unibox-vis" src="'+word['overlayImage'] +'" style="background-image: url(\''+word['image']+'\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');				
-			} else {
-				suggestBox.append('<img class="unibox-vis" src="'+word['image']+'">');
+			if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
+				if (word['overlayImage'] != undefined) {
+					suggestBox.append('<img class="unibox-vis" src="'+word['overlayImage'] +'" style="background-image: url(\''+word['image']+'\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');				
+				} else {
+					suggestBox.append('<img class="unibox-vis" src="'+word['image']+'">');
+				}
 			}
 
 			var invisibleBox = $('#unibox-invisible');
 			invisibleBox.html(searchString.replace(new RegExp(word['name'],'gi'),'<span>'+word['name']+'</span>'));
 
 			// show visuals above search bar
-			if (jQuery.inArray(word['image'], ivfWords) == -1) {
+			if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'top') && jQuery.inArray(word['image'], ivfWords) == -1) {
 	
-				var posLeft =  $('#unibox-invisible span').position().left;
-				//console.log(posLeft);
+				var span =  $('#unibox-invisible span');
+				if (span != undefined && word['name'].length > 0) {
+					var posLeft = $('#unibox-invisible span').position().left;
+				
+					console.log(posLeft);
 
-				visImage = $('<div class="unibox-ivf"><img src="'+word['image']+'"></div>');
-				visImage.css('left', searchBox.offset().left + posLeft - 10);
-				visImage.css('top', searchBox.offset().top - 80);
-		        $('body').append(visImage);
-		        setTimeout(function() {$('.unibox-ivf').find('img').addClass('l'); }, 10);	
+					visImage = $('<div class="unibox-ivf"><img src="'+word['image']+'" alt="'+word['name']+'"></div>');
+					visImage.css('left', searchBox.offset().left + posLeft - 10);
+					visImage.css('top', searchBox.offset().top - 80);
+			        $('body').append(visImage);
+			        setTimeout(function() {$('.unibox-ivf').find('img').addClass('l'); }, 10);	
 
+				}
 		        //visImage.find('img').addClass('l');
 		        ivfWords.push(word['image']);		        
 			}			
 
 		});
 		
+		$("img").error(function () {
+            $(this).hide();
+        });
+
 		//// position it
 		suggestBox.css('left',searchBox.offset().left);
 		suggestBox.css('top',searchBox.offset().top+searchBox.outerHeight());
@@ -228,6 +249,10 @@ var UniBox = function() {
 
     function scrollList(event) {
 		
+    	if (searchBox.val().length <= 1) {
+			clearIvf();
+    	}
+
 		// return if NOT up or down is pressed
 		if (event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 13) {
 			
@@ -301,6 +326,7 @@ var UniBox = function() {
 			animationSpeed = options.animationSpeed;
 			minChars = options.minChars;
 			enterCallback = options.enterCallback;
+			instantVisualFeedback = options.instantVisualFeedback;
 			queryVisualizationHeadline = options.queryVisualizationHeadline;
                        
             // insert necessary values for inputfield

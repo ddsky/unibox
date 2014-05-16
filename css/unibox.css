@@ -12,7 +12,7 @@ img.unibox-vis {
 	color: #fff;
 	cursor: pointer;
 }
-.unibox-selectable.active a, .unibox-selectable:hover a {
+.unibox-selectable.active a, .unibox-selectable.active span, .unibox-selectable:hover a, .unibox-selectable:hover span {
 	color: #fff;
 }
 .unibox-selectable img {
@@ -25,6 +25,7 @@ img.unibox-vis {
 /* Highlight of search keywords in results. */
 .unibox-selectable span {
 	font-weight: bold;
+	color: #fff;
 }
 
 .unibox-ca {

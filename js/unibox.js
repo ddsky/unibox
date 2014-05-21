@@ -152,7 +152,7 @@ var UniBox = function() {
 				var suggestLine = '<div class="unibox-selectable">';
 				
 				if (suggest['image'] != undefined) {
-					suggestLine += '<img src="'+suggest['image']+'"/>';				
+					suggestLine += '<div class="unibox-selectable-img-container"><img src="'+suggest['image']+'"/></div>';				
 				}
 				
 				if (suggest['link'] != undefined) {

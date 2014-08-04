@@ -10,7 +10,7 @@
             suggestUrl: '',
 			queryVisualizationHeadline: '',
 			highlight: true,
-			throttleTime: 300,
+			throttleTime: 150,
 			animationSpeed: 300,
 			instantVisualFeedback: 'all',
 			enterCallback: undefined,
@@ -68,6 +68,9 @@ var UniBox = function() {
 	
 	// where to show the ivf
 	var instantVisualFeedback = 'all';
+	
+	// remember the last key stroke to avoid showing the suggests after enter
+	var lastKeyCode = -1;
 
     // hide the search suggests
     function hideSuggestBox(event) {
@@ -131,6 +134,12 @@ var UniBox = function() {
 		
 		//data = JSON.parse(data);
 		//console.log(data);
+		
+		// don't do anything if the last key was enter
+		if (lastKeyCode == 13) {
+			hideSuggestBox();
+			return;
+		}
 		
 		var searchString = searchBox.val();
 		
@@ -299,6 +308,8 @@ var UniBox = function() {
     // provide search suggests
     function searchSuggest(event) {
 
+		lastKeyCode = event.keyCode;
+	
 		// scroll list when up or down is pressed
 		if (event.keyCode == 38 || event.keyCode == 40 || event.keyCode == 13) {
 			return;

@@ -10,7 +10,7 @@
             suggestUrl: '',
 			queryVisualizationHeadline: '',
 			highlight: true,
-			throttleTime: 150,
+			throttleTime: 50,
 			animationSpeed: 300,
 			instantVisualFeedback: 'all',
 			enterCallback: undefined,
@@ -183,7 +183,11 @@ var UniBox = function() {
 	    // click handler on selectables
 		$('.unibox-selectable').click(function() {
 			searchBox.val($(this).text());			
-			enterCallback($(this).text());	
+			var href = undefined;
+			try {
+				href = $(this).find('a').attr('href');
+			} catch (e) {}
+			enterCallback($(this).text(), href);	
 			hideSuggestBox();		
 		});
 		
@@ -293,10 +297,14 @@ var UniBox = function() {
 			
 			if (enterCallback != undefined) {
 				var selectedText = searchBox.val();
+				var href = undefined;
 				if (selectedEntryIndex != -1) {
 					selectedText = $($('.unibox-selectable.active')[0]).text();
+					try {
+						href = $($('.unibox-selectable.active')[0]).find('a').attr('href');
+					} catch (e) {}
 				}
-				enterCallback(selectedText);				
+				enterCallback(selectedText, href);				
 			} else if (selectedEntryIndex != -1) {
 				window.location.href = $($('.unibox-selectable.active')[0]).find('a').attr('href');
 			}

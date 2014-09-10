@@ -5,6 +5,15 @@ img.unibox-vis {
 .unibox-selectable {
 	border-bottom: 1px dotted #ddd;
 	clear: both;
+	position: relative;
+}
+
+.unibox-selectable .unibox-extra {
+	cursor: default;
+}
+
+.unibox-selectable:hover .unibox-extra {
+	color: #fff;
 }
 
 .unibox-selectable.active, .unibox-selectable:hover {
@@ -12,7 +21,7 @@ img.unibox-vis {
 	color: #fff;
 	cursor: pointer;
 }
-.unibox-selectable.active a, .unibox-selectable.active span, .unibox-selectable:hover a, .unibox-selectable:hover span {
+.unibox-selectable.active a, .unibox-selectable.active span, .unibox-selectable.active .unibox-extra, .unibox-selectable:hover a, .unibox-selectable:hover span, .unibox-selectable:hover .unibox-extra {
 	color: #fff;
 }
 .unibox-selectable .unibox-selectable-img-container {
@@ -27,7 +36,7 @@ img.unibox-vis {
 }
 
 /* Highlight of search keywords in results. */
-.unibox-selectable span {
+.unibox-selectable span span {
 	font-weight: bold;
 	color: #fff;
 }

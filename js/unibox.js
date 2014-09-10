@@ -14,6 +14,7 @@
 			animationSpeed: 300,
 			instantVisualFeedback: 'all',
 			enterCallback: undefined,
+			extraHtml: undefined,
 			minChars: 3,
 			maxWidth: searchBox.outerWidth()
         }, options);
@@ -50,6 +51,9 @@ var UniBox = function() {
 	
 	// whether the search words should be highlighted in the results
 	var highlight = true;
+
+	// extra HTML code that is shown in each search suggest
+	var extraHtml;
 	
 	// general animation speed
 	var animationSpeed = 300;
@@ -169,9 +173,31 @@ var UniBox = function() {
 					suggestLine += highlightSearchWords(suggest['name'],searchString);
 					suggestLine += '</a>';
 				} else {
-					suggestLine += highlightSearchWords(suggest['name'],searchString);
+					suggestLine += '<span>' + highlightSearchWords(suggest['name'],searchString) + '</span>';
 				}
 				
+				console.log(extraHtml);
+				if (extraHtml != undefined) {
+					var matches = extraHtml.match(/##(.*?)##/gi);
+					var extraHtmlFilled = extraHtml;
+					//console.log(matches);
+					//console.log(suggest);
+					var missedMatch = false;
+					for (var m in matches) {
+						var variable = matches[m].replace(/#/g,'');
+						var replacement = suggest[variable];
+						if (replacement == undefined) {
+							missedMatch = true;
+							continue;
+						}
+						var re = new RegExp(matches[m],'g');						
+						extraHtmlFilled = extraHtmlFilled.replace(re,replacement);						
+					}
+					if (!missedMatch) {
+						suggestLine += '<div class="unibox-extra">'+extraHtmlFilled+'</div>';
+					}
+				}
+
 				suggestLine += '<div class="unibox-ca"></div></div>';
 				
 				var suggestNode = $(suggestLine);
@@ -182,13 +208,19 @@ var UniBox = function() {
 
 	    // click handler on selectables
 		$('.unibox-selectable').click(function() {
-			searchBox.val($(this).text());			
+			var q = $(this).find('span').text();
+			searchBox.val(q);			
 			var href = undefined;
 			try {
 				href = $(this).find('a').attr('href');
 			} catch (e) {}
-			enterCallback($(this).text(), href);	
+			enterCallback(q, href);	
 			hideSuggestBox();		
+		});
+
+		// click handler on selectables
+		$('.unibox-selectable .unibox-extra').click(function() {
+			event.stopPropagation();
 		});
 		
 		// trigger words / visualization
@@ -299,7 +331,8 @@ var UniBox = function() {
 				var selectedText = searchBox.val();
 				var href = undefined;
 				if (selectedEntryIndex != -1) {
-					selectedText = $($('.unibox-selectable.active')[0]).text();
+					selectedText = $($('.unibox-selectable.active span')[0]).text();
+					searchBox.val(selectedText);	
 					try {
 						href = $($('.unibox-selectable.active')[0]).find('a').attr('href');
 					} catch (e) {}
@@ -338,6 +371,7 @@ var UniBox = function() {
         init: function(searchBoxObject, options) {
             searchBox = searchBoxObject;
 			highlight = options.highlight;
+			extraHtml = options.extraHtml;
             suggestUrl = options.suggestUrl;
 			throttleTime = options.throttleTime;
 			animationSpeed = options.animationSpeed;
@@ -375,7 +409,7 @@ var UniBox = function() {
 			var invisible = $('<div id="unibox-invisible">text whatever <span>this one</span></div>');
 			searchBox.parent().append(invisible);
 
-			console.log('unibox initialized');
+			//console.log('unibox initialized');
         }
     }
 }();

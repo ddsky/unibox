@@ -31,6 +31,7 @@ var settings = {
   // these are optional:
   instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', or 'all', default: 'all'
   throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
+  extraHtml: undefined, // extra HTML code that is shown in each search suggest
   highlight: true, // whether matched words should be highlighted, default: true
   queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
   animationSpeed: 300, // speed of the animations, default: 300ms
@@ -61,6 +62,7 @@ On the server side create code in whatever language you want. The URL of the ser
         name: 'name', // the name of the suggest that is shown to the user
         image: 'http://...', // optionally an image URL to show next to the suggest
         link: 'http://...', // optionally a URL that links to the suggested page
+        // ... more fields that can be used with ##name## in "extraHtml" templates
       }
     ],
   

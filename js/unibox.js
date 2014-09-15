@@ -105,7 +105,7 @@ var UniBox = function() {
 	        timer = window.setTimeout(function(){
 	            f.apply(context, args);
 	        },
-	        delay || 500);
+	        delay || 50);
 	    };
 	}
 
@@ -315,7 +315,7 @@ var UniBox = function() {
         } 
 		
 		// mark the selected selectable
-		if (selectables.length > 0) {
+		if (selectables.length > 0 && selectedEntryIndex > -1) {
 			
 			selectedEntryIndex = selectedEntryIndex % selectables.length;
 			selectables.removeClass('active');

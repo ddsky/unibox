@@ -19,7 +19,7 @@ Download the unibox.min.js and unibox.css or simply install via bower writing `b
 
 ## Configuration and Usage
 
-For suggestions to work you have two parts. First, the unibox.js and unibox.css need to be included and configured on the page. Second, the server needs to give search suggest data for the plugin to show.
+For suggestions to work you have two parts. First, the unibox.min.js and unibox.min.css need to be included and configured on the page. Second, the server needs to give search suggest data for the plugin to show.
 
 ### Client Side
 

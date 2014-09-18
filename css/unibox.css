@@ -1,7 +1,9 @@
+/* Instant Visual Feedback image size. */
 img.unibox-vis {
 	width: 70px;
 }
 
+/* Each search suggest line. */
 .unibox-selectable {
 	border-bottom: 1px dotted #ddd;
 	clear: both;
@@ -52,7 +54,6 @@ img.unibox-vis {
 	/** needs to get the same styles as the search box so that width of the text within the search box can be computed */
 }
 
-
 /* suggest box */
 #unibox-suggest-box {
   position: absolute;
@@ -91,8 +92,8 @@ img.unibox-vis {
 .unibox-ivf img {
     max-width: 76px;
     position: absolute;
-    top: 0px;
-    bottom: 0px;
+    top: 0;
+    bottom: 0;
     margin: auto;
     transition:.3s ease-out;
     -webkit-transition:0.3s ease-out;

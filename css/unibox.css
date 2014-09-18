@@ -67,7 +67,7 @@ img.unibox-vis {
 	text-decoration: none;
 }
 
-#unibox-suggest-box > div {
+#unibox-suggest-box > div > div {
 	padding: 6px 8px;
 }
 #unibox-suggest-box h4 {

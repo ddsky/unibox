@@ -207,8 +207,12 @@ var UniBox = function() {
 			
 	    });
 
+        //// update selectables for cursor navigation
+        selectables = $('.unibox-selectable');
+        selectedEntryIndex = -1;
+
 	    // click handler on selectables
-		$('.unibox-selectable').click(function() {
+        selectables.click(function() {
 			var q = $(this).find('span').text();
 			searchBox.val(q);			
 			var href = undefined;
@@ -254,7 +258,7 @@ var UniBox = function() {
 					var posLeft = $(span).position().left;
 
 					visImage = $('<div class="unibox-ivf"><img src="'+word['image']+'" alt="'+word['name']+'"></div>');
-					visImage.css('left', searchBox.offset().left + posLeft - 10);
+                    visImage.css('left', getSearchBoxOffset() + posLeft - 10);
 					visImage.css('top', searchBox.offset().top - 80);
 			        $('body').append(visImage);
 			        setTimeout(function() {$('.unibox-ivf').find('img').addClass('l'); }, 10);
@@ -276,22 +280,22 @@ var UniBox = function() {
         });
 
 		//// position it
-		suggestBox.css('left',searchBox.offset().left);
+        suggestBox.css('left',getSearchBoxOffset());
 		suggestBox.css('top',searchBox.offset().top+searchBox.outerHeight());
 		
 		//// show it
 		suggestBox.slideDown(animationSpeed, function() {
 			//// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
-			suggestBox.css('left',searchBox.offset().left);
+            suggestBox.css('left',getSearchBoxOffset());
 			suggestBox.css('top',searchBox.offset().top+searchBox.outerHeight());
 		});
 
-		//// update selectables for cursor navigation 
-		selectables = $('.unibox-selectable');
-		selectedEntryIndex = -1;
-		
     }
-    
+
+    function getSearchBoxOffset() {
+        return searchBox.offset().left - $('body').offset().left;
+    }
+
     function updateIvf() {
         var shownWords = $('.unibox-ivf img').map(function(){return $(this).attr('src');}).get();
         for (var i = 0; i < shownWords.length; i++) {

@@ -1,9 +1,9 @@
-/* Instant Visual Feedback image size. */
+/* instant Visual Feedback image size. */
 img.unibox-vis {
 	width: 70px;
 }
 
-/* Each search suggest line. */
+/* each search suggest line. */
 .unibox-selectable {
 	border-bottom: 1px dotted #ddd;
 	clear: both;
@@ -40,7 +40,6 @@ img.unibox-vis {
 /* Highlight of search keywords in results. */
 .unibox-selectable span span {
 	font-weight: bold;
-	color: #fff;
 }
 
 .unibox-ca {

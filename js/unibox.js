@@ -390,12 +390,11 @@ var UniBox = function() {
        
     }
 
-    function updateSuggestUrl(newUrl) {
-        suggestUrl = newUrl;
-    }
-    
     // return an object, through closure all methods keep bound to returned object
     return {
+        updateSuggestUrl: function(newUrl) {
+            suggestUrl = newUrl;
+        },
         init: function(searchBoxObject, options) {
             searchBox = searchBoxObject;
 			highlight = options.highlight;
@@ -435,7 +434,6 @@ var UniBox = function() {
 			// copy search box styles to an invisible element so we can determine the text width
 			var invisible = $('<div id="unibox-invisible">text whatever <span>this one</span></div>');
 			searchBox.parent().append(invisible);
-
         }
     }
 }();

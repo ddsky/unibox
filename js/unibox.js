@@ -389,6 +389,10 @@ var UniBox = function() {
 		}
        
     }
+
+    function updateSuggestUrl(newUrl) {
+        suggestUrl = newUrl;
+    }
     
     // return an object, through closure all methods keep bound to returned object
     return {

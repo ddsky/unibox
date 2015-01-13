@@ -8,6 +8,7 @@
         var settings = $.extend({
             // these are the defaults.
             suggestUrl: '',
+            ivfImagePath: '',
 			queryVisualizationHeadline: '',
 			highlight: true,
 			throttleTime: 50,
@@ -42,6 +43,9 @@ var UniBox = function() {
 	
 	// the URL where to get the search suggests
 	var suggestUrl = '';
+
+    // the root path to the instant visual feedback images
+    var ivfImagePath = '';
     
 	// the number of ms before the update of the search box is triggered
 	var throttleTime;
@@ -239,9 +243,9 @@ var UniBox = function() {
 
 			if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
 				if (word['overlayImage'] != undefined) {
-					suggestBox.append('<img class="unibox-vis" src="'+word['overlayImage'] +'" style="background-image: url(\''+word['image']+'\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');				
+					suggestBox.append('<img class="unibox-vis" src="'+ivfImagePath+word['overlayImage'] +'" style="background-image: url(\''+ivfImagePath+word['image']+'\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');
 				} else {
-					suggestBox.append('<img class="unibox-vis" src="'+word['image']+'">');
+					suggestBox.append('<img class="unibox-vis" src="'+ivfImagePath+word['image']+'">');
 				}
 			}
 
@@ -257,7 +261,7 @@ var UniBox = function() {
 				if (span != undefined && word['name'].length > 0) {
 					var posLeft = $(span).position().left;
 
-					visImage = $('<div class="unibox-ivf"><img src="'+word['image']+'" alt="'+word['name']+'"></div>');
+					visImage = $('<div class="unibox-ivf"><img src="'+ivfImagePath+word['image']+'" alt="'+word['name']+'"></div>');
                     visImage.css('left', getSearchBoxOffset() + posLeft - 10);
 					visImage.css('top', searchBox.offset().top - 80);
 			        $('body').append(visImage);
@@ -395,11 +399,21 @@ var UniBox = function() {
         updateSuggestUrl: function(newUrl) {
             suggestUrl = newUrl;
         },
+        setIvfImagePath: function(path) {
+            ivfImagePath = path;
+            if (ivfImagePath.charAt(ivfImagePath.length-1) != '/') {
+                ivfImagePath += '/';
+            }
+        },
+        changeInstantVisualFeedbackState: function(state) {
+            instantVisualFeedback = state;
+        },
         init: function(searchBoxObject, options) {
             searchBox = searchBoxObject;
 			highlight = options.highlight;
 			extraHtml = options.extraHtml;
             suggestUrl = options.suggestUrl;
+            ivfImagePath = options.ivfImagePath;
 			throttleTime = options.throttleTime;
 			animationSpeed = options.animationSpeed;
 			minChars = options.minChars;

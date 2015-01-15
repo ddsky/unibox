@@ -23,6 +23,12 @@ For suggestions to work you have two parts. First, the unibox.min.js and unibox.
 
 ### Client Side
 
+```
+<div id="unibox">
+    <input id="searchBox">
+</div>
+```
+
 ```javascript
 // create a settings object
 var settings = {

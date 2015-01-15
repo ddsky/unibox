@@ -303,7 +303,7 @@ var UniBox = function() {
     function updateIvf() {
         var shownWords = $('.unibox-ivf img').map(function(){return $(this).attr('src');}).get();
         for (var i = 0; i < shownWords.length; i++) {
-           if (jQuery.inArray(shownWords[i],ivfWords) == -1) {
+           if (jQuery.inArray(shownWords[i].replace(ivfImagePath,''),ivfWords) == -1) {
                $('.unibox-ivf:has(img[src*="'+shownWords[i]+'"])').remove();
            }
         }
@@ -391,7 +391,6 @@ var UniBox = function() {
 				 updateSuggestBox(data);
 			}});
 		}
-       
     }
 
     // return an object, through closure all methods keep bound to returned object

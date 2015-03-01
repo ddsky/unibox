@@ -56,18 +56,18 @@ On the server side create code in whatever language you want. The URL of the ser
 
 ```javascript
 {
-  words: [
+  'words': [
     {
-      name: 'name', // optionally, the name of the detected word
-      image: 'http://...', // the URL of the image
+      'name': 'name', // optionally, the name of the detected word
+      'image': 'http://...', // the URL of the image
     },
   ],
   suggests: {
     'headline 1': [
       {
-        name: 'name', // the name of the suggest that is shown to the user
-        image: 'http://...', // optionally an image URL to show next to the suggest
-        link: 'http://...', // optionally a URL that links to the suggested page
+        'name': 'name', // the name of the suggest that is shown to the user
+        'image': 'http://...', // optionally an image URL to show next to the suggest
+        'link': 'http://...', // optionally a URL that links to the suggested page
         // ... more fields that can be used with ##name## in "extraHtml" templates
       }
     ],

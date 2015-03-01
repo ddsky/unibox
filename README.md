@@ -62,7 +62,7 @@ On the server side create code in whatever language you want. The URL of the ser
       'image': 'http://...', // the URL of the image
     },
   ],
-  suggests: {
+  'suggests': {
     'headline 1': [
       {
         'name': 'name', // the name of the suggest that is shown to the user
@@ -71,9 +71,7 @@ On the server side create code in whatever language you want. The URL of the ser
         // ... more fields that can be used with ##name## in "extraHtml" templates
       }
     ],
-  
   }
- 
 }
 ```
 The field `suggests` contains search suggests grouped under headlines. For example, on spoonacular.com you have an empty headline and a "Recipes" headline to group suggests.

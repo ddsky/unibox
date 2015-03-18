@@ -149,6 +149,9 @@ var UniBox = function() {
         //// fill the box
         suggestBox.html('');
 
+        // find out whether we have something to show in the first place
+        var showSuggestBox = false;
+
         // suggest
         $.each(data['suggests'], function(key, values) {
 
@@ -199,10 +202,10 @@ var UniBox = function() {
 
                 var suggestNode = $(suggestLine);
                 suggestSet.append(suggestNode);
+                showSuggestBox = true;
             });
 
             suggestBox.append(suggestSet);
-
         });
 
         //// update selectables for cursor navigation
@@ -229,6 +232,7 @@ var UniBox = function() {
         // trigger words / visualization
         if (data['words'].length > 0 && queryVisualizationHeadline.length > 0 && (instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
             suggestBox.append('<h4>'+queryVisualizationHeadline+'</h4>');
+            showSuggestBox = true;
         }
 
         var newIvfWords = [];
@@ -282,11 +286,15 @@ var UniBox = function() {
         suggestBox.css('top',getSearchBoxOffset().top);
 
         //// show it
-        suggestBox.slideDown(animationSpeed, function() {
-            //// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
-            suggestBox.css('left',getSearchBoxOffset().left);
-            suggestBox.css('top',getSearchBoxOffset().top);
-        });
+        if (showSuggestBox) {
+            suggestBox.slideDown(animationSpeed, function() {
+                //// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
+                suggestBox.css('left',getSearchBoxOffset().left);
+                suggestBox.css('top',getSearchBoxOffset().top);
+            });
+        } else {
+            hideSuggestBox();
+        }
 
     }
 

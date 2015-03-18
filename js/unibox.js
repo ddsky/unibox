@@ -238,7 +238,7 @@ var UniBox = function() {
             if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
                 if (word['overlayImage'] != undefined) {
                     suggestBox.append('<img class="unibox-vis" src="'+ivfImagePath+word['overlayImage'] +'" style="background-image: url(\''+ivfImagePath+word['image']+'\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');
-                } else {
+                } else if (word['image'] != undefined) {
                     suggestBox.append('<img class="unibox-vis" src="'+ivfImagePath+word['image']+'">');
                 }
             }
@@ -252,7 +252,7 @@ var UniBox = function() {
             if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'top') && jQuery.inArray(word['image'], ivfWords) == -1) {
 
                 var span =  $('#unibox-invisible span')[0];
-                if (span != undefined && word['name'].length > 0) {
+                if (span != undefined && word['name'].length > 0 && word['image'] != undefined) {
                     var posLeft = $(span).position().left;
 
                     visImage = $('<div class="unibox-ivf"><img src="'+ivfImagePath+word['image']+'" alt="'+word['name']+'"></div>');

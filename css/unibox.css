@@ -46,6 +46,10 @@ img.unibox-vis {
 	clear: both;
 }
 
+#unibox {
+    position: relative;
+}
+
 #unibox-invisible {
 	visibility: hidden;
 	position: relative;

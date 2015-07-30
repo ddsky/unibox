@@ -8,6 +8,9 @@ img.unibox-vis {
 	border-bottom: 1px dotted #ddd;
 	clear: both;
 	position: relative;
+	font-family: sans-serif;
+	font-size: 14px;
+	text-align: left;
 }
 
 .unibox-selectable .unibox-extra {
@@ -19,7 +22,7 @@ img.unibox-vis {
 }
 
 .unibox-selectable.active, .unibox-selectable:hover {
-	background-color: #269FCA;
+	background-color: #0078bf;
 	color: #fff;
 	cursor: pointer;
 }
@@ -44,10 +47,6 @@ img.unibox-vis {
 
 .unibox-ca {
 	clear: both;
-}
-
-#unibox {
-    position: relative;
 }
 
 #unibox-invisible {

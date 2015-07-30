@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Unibox Sample Implementation</title>
+        <script type="application/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script type="application/javascript" src="../js/unibox.min.js"></script>
+        <link rel="stylesheet" href="../css/unibox.min.css"/>
+        <style>
+            #main {
+                margin-left: auto;
+                margin-right: auto;
+                width: 80%;
+                max-width: 800px;
+                border: 1px solid #aaa;
+                background-color: #fefefe;
+                font-family: sans-serif;
+                font-size: 12px;
+            }
+            #head {
+                text-align: right;
+                padding: 20px;
+                position: relative;
+            }
+            #head form {
+                /*style="position:absolute;left: 10px"*/
+                /*position:absolute;*/
+                /*left: 10px;*/
+            }
+            #searchInput {
+                width: 350px;
+            }
+            #body {
+                padding: 20px;
+            }
+
+            /** let's modify the default border size of the unibox suggest box. Note how the size of the suggest box still stays as wide as the input. */
+            #unibox-suggest-box {
+                border-width: 10px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div id="main">
+            <div id="head">
+                <form>
+                    <input id="searchInput" type="text" />
+                    <input type="submit" value="search" />
+                </form>
+            </div>
+            <div id="body">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec sapien nibh. Donec pharetra, massa ut accumsan hendrerit, justo enim dapibus sapien, vitae bibendum massa nunc nec metus. Pellentesque elementum vulputate ipsum id rutrum. Nam purus erat, lobortis at ultrices nec, consequat lacinia dui. Cras augue nunc, ultrices at faucibus non, tristique at ipsum. Nam orci nisl, vestibulum nec accumsan at, malesuada vitae lectus. Cras tincidunt lobortis urna vel finibus.</p>
+
+                <p>Nulla ut commodo turpis, malesuada sagittis quam. In pulvinar, nisi vehicula porta pulvinar, diam nisi commodo eros, in pulvinar libero ante quis nunc. Nam vitae magna arcu. Duis pharetra, orci imperdiet porttitor euismod, justo odio sollicitudin neque, vel hendrerit sapien ligula aliquet lorem. Sed auctor ac erat porta auctor. Nam rutrum blandit quam et blandit. Suspendisse ac augue ac nunc semper congue. In efficitur mattis leo a mollis. Suspendisse dictum molestie nulla, ut dictum sapien dignissim sed. In ac odio in augue elementum mollis pharetra nec magna. Nulla varius dapibus sagittis.</p>
+
+                <p>Maecenas sed lacus egestas tellus ultrices finibus. Sed a ligula non mauris pharetra sagittis. In sit amet felis vel lectus pharetra pellentesque quis sit amet purus. Vestibulum accumsan quam dui, molestie ultricies elit mollis sit amet. Sed nec elementum dui, sit amet dignissim nisi. Maecenas faucibus elit ut eros mattis tincidunt. Nunc sed eros rutrum, eleifend dui auctor, dictum magna. Maecenas ornare consectetur augue et placerat.</p>
+
+                <p>Mauris sodales et augue sed lobortis. In vitae lobortis massa, in volutpat lacus. Etiam at nisl id nibh porttitor condimentum sit amet a urna. Quisque interdum tellus et tortor ornare, vitae semper mi maximus. Morbi augue nunc, placerat varius massa ac, vulputate commodo felis. Donec quis elit accumsan, fringilla tortor scelerisque, iaculis justo. Mauris dui ex, venenatis at augue eu, finibus consequat quam. Fusce id consequat erat. Ut eu justo non velit viverra maximus vel vel orci. Nam non gravida ex. Suspendisse congue nunc non mollis mollis.</p>
+
+                <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed congue tortor libero, at maximus massa scelerisque vitae. Mauris sit amet accumsan mauris. Maecenas nec ante eleifend ligula luctus pretium eu et eros. Donec luctus euismod est sed bibendum. Nullam sed augue metus. Aenean bibendum eleifend metus a commodo. Nullam augue risus, elementum non mi vel, convallis dapibus leo. Donec lobortis eleifend dignissim. In placerat, risus sed tempus gravida, mi diam semper neque, sed pretium mi diam eu augue.</p>
+
+                <p>Nulla ut commodo turpis, malesuada sagittis quam. In pulvinar, nisi vehicula porta pulvinar, diam nisi commodo eros, in pulvinar libero ante quis nunc. Nam vitae magna arcu. Duis pharetra, orci imperdiet porttitor euismod, justo odio sollicitudin neque, vel hendrerit sapien ligula aliquet lorem. Sed auctor ac erat porta auctor. Nam rutrum blandit quam et blandit. Suspendisse ac augue ac nunc semper congue. In efficitur mattis leo a mollis. Suspendisse dictum molestie nulla, ut dictum sapien dignissim sed. In ac odio in augue elementum mollis pharetra nec magna. Nulla varius dapibus sagittis.</p>
+
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec sapien nibh. Donec pharetra, massa ut accumsan hendrerit, justo enim dapibus sapien, vitae bibendum massa nunc nec metus. Pellentesque elementum vulputate ipsum id rutrum. Nam purus erat, lobortis at ultrices nec, consequat lacinia dui. Cras augue nunc, ultrices at faucibus non, tristique at ipsum. Nam orci nisl, vestibulum nec accumsan at, malesuada vitae lectus. Cras tincidunt lobortis urna vel finibus.</p>
+
+                <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed congue tortor libero, at maximus massa scelerisque vitae. Mauris sit amet accumsan mauris. Maecenas nec ante eleifend ligula luctus pretium eu et eros. Donec luctus euismod est sed bibendum. Nullam sed augue metus. Aenean bibendum eleifend metus a commodo. Nullam augue risus, elementum non mi vel, convallis dapibus leo. Donec lobortis eleifend dignissim. In placerat, risus sed tempus gravida, mi diam semper neque, sed pretium mi diam eu augue.</p>
+
+                <p>Mauris sodales et augue sed lobortis. In vitae lobortis massa, in volutpat lacus. Etiam at nisl id nibh porttitor condimentum sit amet a urna. Quisque interdum tellus et tortor ornare, vitae semper mi maximus. Morbi augue nunc, placerat varius massa ac, vulputate commodo felis. Donec quis elit accumsan, fringilla tortor scelerisque, iaculis justo. Mauris dui ex, venenatis at augue eu, finibus consequat quam. Fusce id consequat erat. Ut eu justo non velit viverra maximus vel vel orci. Nam non gravida ex. Suspendisse congue nunc non mollis mollis.</p>
+
+                <p>Maecenas sed lacus egestas tellus ultrices finibus. Sed a ligula non mauris pharetra sagittis. In sit amet felis vel lectus pharetra pellentesque quis sit amet purus. Vestibulum accumsan quam dui, molestie ultricies elit mollis sit amet. Sed nec elementum dui, sit amet dignissim nisi. Maecenas faucibus elit ut eros mattis tincidunt. Nunc sed eros rutrum, eleifend dui auctor, dictum magna. Maecenas ornare consectetur augue et placerat.</p>
+            </div>
+        </div>
+
+        <!-- Here comes our unibox configuration -->
+        <script>
+
+            $(function() {
+
+                var settings = {
+                    // these are required:
+                    suggestUrl: '', // the URL that provides the data for the suggest
+                    // these are optional:
+                    instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
+                    throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
+                    extraHtml: undefined, // extra HTML code that is shown in each search suggest
+                    highlight: true, // whether matched words should be highlighted, default: true
+                    queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
+                    animationSpeed: 300, // speed of the animations, default: 300ms
+                    enterCallback: undefined, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
+                    minChars: 3, // minimum number of characters before the suggests shows, default: 3
+                    maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
+                };
+
+                // apply the settings to an input that should get the unibox
+                $("#searchInput").unibox(settings);
+
+            });
+
+        </script>
+
+    </body>
+</html>

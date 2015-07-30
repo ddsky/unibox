@@ -36,6 +36,9 @@ var UniBox = function() {
     // the search box
     var searchBox;
 
+    // the search box's parent
+    var searchBoxParent;
+
     // the suggest box
     var suggestBox;
 
@@ -262,7 +265,8 @@ var UniBox = function() {
                     visImage = $('<div class="unibox-ivf"><img src="'+ivfImagePath+word['image']+'" alt="'+word['name']+'"></div>');
                     visImage.css('left', getSearchBoxOffset().left + posLeft - 10);
                     visImage.css('top', getSearchBoxOffset().top - searchBox.outerHeight() - 80);
-                    $('#unibox').append(visImage);
+                    //$('#unibox').append(visImage);
+                    searchBoxParent.append(visImage);
                     setTimeout(function() {$('.unibox-ivf').find('img').addClass('l'); }, 10);
 
                     //visImage.find('img').addClass('l');
@@ -299,7 +303,8 @@ var UniBox = function() {
     }
 
     function getSearchBoxOffset() {
-        return {left:searchBox.offset().left - $('#unibox').offset().left, top: searchBox.offset().top - $('#unibox').offset().top + searchBox.outerHeight()};
+        //return {left:searchBox.offset().left - $('#unibox').offset().left, top: searchBox.offset().top - $('#unibox').offset().top + searchBox.outerHeight()};
+        return {left:searchBox.offset().left - searchBoxParent.offset().left, top: searchBox.offset().top - searchBoxParent.offset().top + searchBox.outerHeight()};
     }
 
     function updateIvf() {
@@ -406,6 +411,7 @@ var UniBox = function() {
         },
         init: function(searchBoxObject, options) {
             searchBox = searchBoxObject;
+            searchBoxParent = searchBox.parent();
             highlight = options.highlight;
             extraHtml = options.extraHtml;
             suggestUrl = options.suggestUrl;
@@ -422,9 +428,15 @@ var UniBox = function() {
 
             // position and size the suggest box
             suggestBox = $('<div id="unibox-suggest-box"></div>');
-            $('#unibox').append(suggestBox);
-            suggestBox.css('min-width', searchBox.outerWidth());
-            suggestBox.css('max-width', options.maxWidth);
+            searchBoxParent.append(suggestBox);
+            var pos = searchBoxParent.css('position');
+            if (pos != 'absolute') {
+                searchBox.parent().css('position','relative');
+            }
+            var borderSize = suggestBox.css('border-width').replace('px','');
+            console.log(borderSize);
+            suggestBox.css('min-width', searchBox.outerWidth()-2*borderSize);
+            suggestBox.css('max-width', options.maxWidth-2*borderSize);
 
             // add event listeners
             searchBox.keydown(scrollList);

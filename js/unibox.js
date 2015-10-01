@@ -14,6 +14,7 @@
             animationSpeed: 300,
             instantVisualFeedback: 'all',
             enterCallback: undefined,
+            enterCallbackResult: undefined,
             extraHtml: undefined,
             minChars: 3,
             maxWidth: searchBox.outerWidth()
@@ -72,6 +73,9 @@ var UniBox = function() {
     // the action that should happen if enter is pressed
     var enterCallback;
 
+    // the action that should happen if enter is pressed when a suggest result is selected
+    var enterCallbackResult;
+
     // the words that were highlighted above the search bar
     var ivfWords = [];
 
@@ -90,8 +94,15 @@ var UniBox = function() {
 
             // hide if tab or enter was pressed
             if (event.keyCode == 9 || event.keyCode == 13 || inputText.length < minChars) {
+
                 suggestBox.slideUp(animationSpeed);
+
+                if (event.keyCode == 13 && enterCallback != undefined && selectedEntryIndex == -1) {
+                    enterCallback.call(this, inputText);
+                }
+
                 selectedEntryIndex = -1;
+
             }
 
         } else {
@@ -107,9 +118,8 @@ var UniBox = function() {
             var context = this, args = arguments;
             clearTimeout(timer);
             timer = window.setTimeout(function(){
-                    f.apply(context, args);
-                },
-                    delay || 50);
+                f.apply(context, args);
+            }, delay || 50);
         };
     }
 
@@ -222,7 +232,7 @@ var UniBox = function() {
             try {
                 href = $(this).find('a').attr('href');
             } catch (e) {}
-            enterCallback.call(this, q, href);
+            enterCallbackResult.call(this, q, href);
             hideSuggests();
         });
 
@@ -351,7 +361,7 @@ var UniBox = function() {
 
         if (event.keyCode == 13) {
 
-            if (enterCallback != undefined) {
+            if (enterCallbackResult != undefined) {
                 var selectedText = searchBox.val();
                 var href = undefined;
                 if (selectedEntryIndex != -1) {
@@ -361,7 +371,7 @@ var UniBox = function() {
                         href = $($('.unibox-selectable.active')[0]).find('a').attr('href');
                     } catch (e) {}
                 }
-                enterCallback.call(this, selectedText, href);
+                enterCallbackResult.call(this, selectedText, href);
             } else if (selectedEntryIndex != -1) {
                 window.location.href = $($('.unibox-selectable.active')[0]).find('a').attr('href');
             }
@@ -422,6 +432,7 @@ var UniBox = function() {
             animationSpeed = options.animationSpeed;
             minChars = options.minChars;
             enterCallback = options.enterCallback;
+            enterCallbackResult = options.enterCallbackResult;
             instantVisualFeedback = options.instantVisualFeedback;
             queryVisualizationHeadline = options.queryVisualizationHeadline;
 
@@ -443,7 +454,7 @@ var UniBox = function() {
             // add event listeners
             searchBox.keydown(scrollList);
             searchBox.keydown(throttle(searchSuggest,throttleTime));
-            searchBox.keydown(hideSuggests);
+            //searchBox.keydown(hideSuggests);
             searchBox.keyup(hideSuggests);
 
             // click outside of suggest div closes it

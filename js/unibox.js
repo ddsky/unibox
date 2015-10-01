@@ -82,7 +82,7 @@ var UniBox = function() {
     var lastKeyCode = -1;
 
     // hide the search suggests
-    function hideSuggestBox(event) {
+    function hideSuggests(event) {
 
         if (event !== undefined) {
 
@@ -98,7 +98,6 @@ var UniBox = function() {
             suggestBox.slideUp(animationSpeed);
             selectedEntryIndex = -1;
         }
-
 
     }
 
@@ -143,7 +142,7 @@ var UniBox = function() {
 
         // don't do anything if the last key was enter
         if (lastKeyCode == 13) {
-            hideSuggestBox();
+            hideSuggests();
             return;
         }
 
@@ -224,7 +223,7 @@ var UniBox = function() {
                 href = $(this).find('a').attr('href');
             } catch (e) {}
             enterCallback.call(this, q, href);
-            hideSuggestBox();
+            hideSuggests();
         });
 
         // click handler on selectables
@@ -297,7 +296,7 @@ var UniBox = function() {
                 suggestBox.css('top',getSearchBoxOffset().top);
             });
         } else {
-            hideSuggestBox();
+            hideSuggests();
         }
 
     }
@@ -400,6 +399,9 @@ var UniBox = function() {
         updateSuggestUrl: function(newUrl) {
             suggestUrl = newUrl;
         },
+        hideSuggestBox: function() {
+            hideSuggests();
+        },
         setIvfImagePath: function(path) {
             ivfImagePath = path;
             if (ivfImagePath.charAt(ivfImagePath.length-1) != '/') {
@@ -434,15 +436,15 @@ var UniBox = function() {
                 searchBox.parent().css('position','relative');
             }
             var borderSize = suggestBox.css('border-width').replace('px','');
-            console.log(borderSize);
+            //console.log(borderSize);
             suggestBox.css('min-width', searchBox.outerWidth()-2*borderSize);
             suggestBox.css('max-width', options.maxWidth-2*borderSize);
 
             // add event listeners
             searchBox.keydown(scrollList);
             searchBox.keydown(throttle(searchSuggest,throttleTime));
-            searchBox.keydown(hideSuggestBox);
-            searchBox.keyup(hideSuggestBox);
+            searchBox.keydown(hideSuggests);
+            searchBox.keyup(hideSuggests);
 
             // click outside of suggest div closes it
             $('html').click(function() {
@@ -454,8 +456,12 @@ var UniBox = function() {
             });
 
             // copy search box styles to an invisible element so we can determine the text width
-            var invisible = $('<div id="unibox-invisible">text <span>more</span></div>');
+            var invisible = $('<div id="unibox-invisible">&nbps;<span>&nbsp;</span></div>');
             searchBox.parent().append(invisible);
+
+            if (instantVisualFeedback == 'none') {
+                $('#unibox-invisible').css('display','none');
+            }
         }
     }
 }();

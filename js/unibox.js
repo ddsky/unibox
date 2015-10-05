@@ -15,6 +15,7 @@
             instantVisualFeedback: 'all',
             enterCallback: undefined,
             enterCallbackResult: undefined,
+            placeholder: undefined,
             extraHtml: undefined,
             minChars: 3,
             maxWidth: searchBox.outerWidth()
@@ -76,6 +77,9 @@ var UniBox = function() {
     // the action that should happen if enter is pressed when a suggest result is selected
     var enterCallbackResult;
 
+    // the placeholder for the input field
+    var placeholder;
+
     // the words that were highlighted above the search bar
     var ivfWords = [];
 
@@ -92,8 +96,8 @@ var UniBox = function() {
 
             var inputText = searchBox.val();
 
-            // hide if tab or enter was pressed
-            if (event.keyCode == 9 || event.keyCode == 13 || inputText.length < minChars) {
+            // hide if tab, escape, or enter was pressed
+            if (event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || inputText.length < minChars) {
 
                 suggestBox.slideUp(animationSpeed);
 
@@ -383,10 +387,16 @@ var UniBox = function() {
     // provide search suggests
     function searchSuggest(event) {
 
+        // don't show suggests if alt + something is pressed
+        if (lastKeyCode == 18) {
+            lastKeyCode = event.keyCode;
+            return;
+        }
+
         lastKeyCode = event.keyCode;
 
         // scroll list when up or down is pressed
-        if (event.keyCode == 38 || event.keyCode == 40 || event.keyCode == 13) {
+        if (event.keyCode == 38 || event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 9) {
             return;
         }
 
@@ -433,6 +443,7 @@ var UniBox = function() {
             minChars = options.minChars;
             enterCallback = options.enterCallback;
             enterCallbackResult = options.enterCallbackResult;
+            placeholder = options.placeholder;
             instantVisualFeedback = options.instantVisualFeedback;
             queryVisualizationHeadline = options.queryVisualizationHeadline;
 
@@ -457,6 +468,10 @@ var UniBox = function() {
             //searchBox.keydown(hideSuggests);
             searchBox.keyup(hideSuggests);
 
+            searchBox.blur(function() {
+                suggestBox.slideUp(animationSpeed);
+            });
+
             // click outside of suggest div closes it
             $('html').click(function() {
                 suggestBox.slideUp(animationSpeed);
@@ -466,8 +481,14 @@ var UniBox = function() {
                 event.stopPropagation();
             });
 
+            // set placeholder if defined, remove input of the search box
+            if (placeholder != undefined) {
+                searchBox.attr('placeholder', placeholder);
+                searchBox.val('');
+            }
+
             // copy search box styles to an invisible element so we can determine the text width
-            var invisible = $('<div id="unibox-invisible">&nbps;<span>&nbsp;</span></div>');
+            var invisible = $('<div id="unibox-invisible">&nbsp;<span>&nbsp;</span></div>');
             searchBox.parent().append(invisible);
 
             if (instantVisualFeedback == 'none') {

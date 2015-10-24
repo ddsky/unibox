@@ -28,8 +28,8 @@ For suggestions to work you have two parts. First, the unibox.min.js and unibox.
 ```
 
 ```javascript
-// create a settings object
-var settings = {
+
+$("#searchBox").unibox({
   // these are required:
   suggestUrl: '', // the URL that provides the data for the suggest
   // these are optional:
@@ -42,10 +42,7 @@ var settings = {
   enterCallback: undefined, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
   minChars: 3, // minimum number of characters before the suggests shows, default: 3
   maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
-};
-
-// apply the settings to an input that should get the unibox
-$("#searchBox").unibox(settings);
+});
 ```
 
 ### Server Side
@@ -76,3 +73,26 @@ The field `suggests` contains search suggests grouped under headlines. For examp
 The field `words` is for the instant visual feedback. All the words or phrases that you recognized should be entered here so they can be shown to the user.
 
 That's it already. If you use unibox and want to let me know, I include your usage example here. Happy coding.
+
+### Notes to keep in mind
+#### Multi UniBoxes
+If you want to initialize more that 1 UniBox in the same page you can wrap the initialization function in an event that triggers when the user switches between input boxes , such as focus 
+```javascript
+$(".usernameBox").focus(function(){
+          $(".usernameBox").unibox({
+              suggestUrl: ' path to your server-side', // the URL that provides the data for the suggest
+      });
+$(".emailBox").focus(function(){
+          $(".emailBox").unibox({
+              suggestUrl: ' path to your server-side', // the URL that provides the data for the suggest
+      });
+```
+#### Bootstrap Fixes
+If you are willing to use bootstrap along with Unibox keep in mind that unibox will mess your `input-group-addon`'s height,
+use this css to fix it
+```css
+#unibox-invisible{
+         position: absolute!important;
+         /*important for fixing the input-group-addon heights*/
+      }
+```

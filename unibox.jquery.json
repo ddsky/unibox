@@ -1,32 +1,32 @@
 {
-    "name": "unibox",
-    "title":       "unibox - search suggestion",
-    "description": "A powerful search suggestion input box.",
-    "keywords": [
-        "search",
-        "suggestion"
-    ],
-    "version": "1.8.3",
-    "author": {
-        "name": "David Urbansky",
-        "url": "https://github.com/ddsky/unibox"
-    },
-    "maintainers": [
-        {
-          "name": "David Urbansky"           
-        }
-    ],
-    "licenses": [
-        {
-            "type": "MIT",
-            "url": "https://github.com/jquery/jquery-color/blob/2.1.2/MIT-LICENSE.txt"
-        }
-    ],
-    "bugs": "https://github.com/ddsky/unibox/issues",
-    "homepage": "https://github.com/ddsky/unibox",
-    "docs": "https://github.com/ddsky/unibox",
-    "download": "https://github.com/ddsky/unibox",
-    "dependencies": {
-        "jquery": ">=1.5"
+  "name": "unibox",
+  "title": "unibox - search suggestion",
+  "description": "A powerful search suggestion input box.",
+  "keywords": [
+    "search",
+    "suggestion"
+  ],
+  "version": "1.8.4",
+  "author": {
+    "name": "David Urbansky",
+    "url": "https://github.com/ddsky/unibox"
+  },
+  "maintainers": [
+    {
+      "name": "David Urbansky"
     }
+  ],
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/jquery/jquery-color/blob/2.1.2/MIT-LICENSE.txt"
+    }
+  ],
+  "bugs": "https://github.com/ddsky/unibox/issues",
+  "homepage": "https://github.com/ddsky/unibox",
+  "docs": "https://github.com/ddsky/unibox",
+  "download": "https://github.com/ddsky/unibox",
+  "dependencies": {
+    "jquery": ">=1.5"
+  }
 }

@@ -1,36 +1,5 @@
-(function($) {
-
-    $.fn.unibox = function(options) {
-        var searchBox = this;
-
-        // settings with default options.
-        var settings = $.extend({
-            // these are the defaults.
-            suggestUrl: '',
-            ivfImagePath: '',
-            queryVisualizationHeadline: '',
-            highlight: true,
-            throttleTime: 50,
-            animationSpeed: 300,
-            instantVisualFeedback: 'all',
-            enterCallback: undefined,
-            enterCallbackResult: undefined,
-            placeholder: undefined,
-            extraHtml: undefined,
-            minChars: 3,
-            maxWidth: searchBox.outerWidth()
-        }, options);
-
-        UniBox.init(searchBox, settings);
-
-        return this;
-    };
-
-}(jQuery));
-
 var UniBox = function() {
     //// common vars
-    // div line height
 
     // index of selected entry
     var selectedEntryIndex = -1;
@@ -225,7 +194,7 @@ var UniBox = function() {
         });
 
         //// update selectables for cursor navigation
-        selectables = $('.unibox-selectable');
+        selectables = searchBoxParent.find('.unibox-selectable');
         selectedEntryIndex = -1;
 
         // click handler on selectables
@@ -241,7 +210,7 @@ var UniBox = function() {
         });
 
         // click handler on selectables
-        $('.unibox-selectable .unibox-extra').click(function() {
+        searchBoxParent.find('.unibox-selectable .unibox-extra').click(function() {
             event.stopPropagation();
         });
 
@@ -263,7 +232,7 @@ var UniBox = function() {
                 }
             }
 
-            var invisibleBox = $('#unibox-invisible');
+            var invisibleBox = searchBoxParent.find('#unibox-invisible');
             invisibleBox.html(searchString.replace(new RegExp(word['name'],'gi'),'<span>'+word['name']+'</span>'));
 
             //console.log(word['image']+' : '+jQuery.inArray(word['image'], ivfWords));
@@ -271,16 +240,16 @@ var UniBox = function() {
             // show visuals above search bar
             if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'top') && jQuery.inArray(word['image'], ivfWords) == -1) {
 
-                var span =  $('#unibox-invisible span')[0];
+                var span =  searchBoxParent.find('#unibox-invisible span')[0];
                 if (span != undefined && word['name'].length > 0 && word['image'] != undefined) {
                     var posLeft = $(span).position().left;
 
                     visImage = $('<div class="unibox-ivf"><img src="'+ivfImagePath+word['image']+'" alt="'+word['name']+'"></div>');
                     visImage.css('left', getSearchBoxOffset().left + posLeft - 10);
                     visImage.css('top', getSearchBoxOffset().top - searchBox.outerHeight() - 80);
-                    //$('#unibox').append(visImage);
+                    //searchBoxParent.find('#unibox').append(visImage);
                     searchBoxParent.append(visImage);
-                    setTimeout(function() {$('.unibox-ivf').find('img').addClass('l'); }, 10);
+                    setTimeout(function() {searchBoxParent.find('.unibox-ivf').find('img').addClass('l'); }, 10);
 
                     //visImage.find('img').addClass('l');
                     newIvfWords.push(word['image']);
@@ -316,22 +285,22 @@ var UniBox = function() {
     }
 
     function getSearchBoxOffset() {
-        //return {left:searchBox.offset().left - $('#unibox').offset().left, top: searchBox.offset().top - $('#unibox').offset().top + searchBox.outerHeight()};
+        //return {left:searchBox.offset().left - searchBoxParent.find('#unibox').offset().left, top: searchBox.offset().top - searchBoxParent.find('#unibox').offset().top + searchBox.outerHeight()};
         return {left:searchBox.offset().left - searchBoxParent.offset().left, top: searchBox.offset().top - searchBoxParent.offset().top + searchBox.outerHeight()};
     }
 
     function updateIvf() {
-        var shownWords = $('.unibox-ivf img').map(function(){return $(this).attr('src');}).get();
+        var shownWords = searchBoxParent.find('.unibox-ivf img').map(function(){return $(this).attr('src');}).get();
         for (var i = 0; i < shownWords.length; i++) {
             if (jQuery.inArray(shownWords[i].replace(ivfImagePath,''),ivfWords) == -1) {
-                $('.unibox-ivf:has(img[src*="'+shownWords[i]+'"])').remove();
+                searchBoxParent.find('.unibox-ivf:has(img[src*="'+shownWords[i]+'"])').remove();
             }
         }
     }
 
     function clearIvf() {
         ivfWords = [];
-        $('.unibox-ivf').remove();
+        searchBoxParent.find('.unibox-ivf').remove();
     }
 
     function scrollList(event) {
@@ -369,15 +338,15 @@ var UniBox = function() {
                 var selectedText = searchBox.val();
                 var href = undefined;
                 if (selectedEntryIndex != -1) {
-                    selectedText = $($('.unibox-selectable.active span')[0]).text();
+                    selectedText = $(searchBoxParent.find('.unibox-selectable.active span')[0]).text();
                     searchBox.val(selectedText);
                     try {
-                        href = $($('.unibox-selectable.active')[0]).find('a').attr('href');
+                        href = $(searchBoxParent.find('.unibox-selectable.active')[0]).find('a').attr('href');
                     } catch (e) {}
                 }
                 enterCallbackResult.call(this, selectedText, href);
             } else if (selectedEntryIndex != -1) {
-                window.location.href = $($('.unibox-selectable.active')[0]).find('a').attr('href');
+                window.location.href = $(searchBoxParent.find('.unibox-selectable.active')[0]).find('a').attr('href');
             }
 
             return false;
@@ -455,7 +424,7 @@ var UniBox = function() {
             searchBoxParent.append(suggestBox);
             var pos = searchBoxParent.css('position');
             if (pos != 'absolute') {
-                searchBox.parent().css('position','relative');
+                searchBoxParent.css('position','relative');
             }
             var borderSize = suggestBox.css('border-width').replace('px','');
             //console.log(borderSize);
@@ -496,4 +465,36 @@ var UniBox = function() {
             }
         }
     }
-}();
+};
+
+
+(function($) {
+
+    $.fn.unibox = function(options) {
+        var searchBox = this;
+
+        // settings with default options.
+        var settings = $.extend({
+            // these are the defaults.
+            suggestUrl: '',
+            ivfImagePath: '',
+            queryVisualizationHeadline: '',
+            highlight: true,
+            throttleTime: 50,
+            animationSpeed: 300,
+            instantVisualFeedback: 'all',
+            enterCallback: undefined,
+            enterCallbackResult: undefined,
+            placeholder: undefined,
+            extraHtml: undefined,
+            minChars: 3,
+            maxWidth: searchBox.outerWidth()
+        }, options);
+
+        var individualUnibox = new UniBox();
+        individualUnibox.init(searchBox, settings);
+
+        return this;
+    };
+
+}(jQuery));

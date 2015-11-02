@@ -1,6 +1,6 @@
 {
   "name": "unibox",
-  "version": "1.8.3",
+  "version": "1.8.4",
   "main": [
     "js/unibox.min.js",
     "css/unibox.min.css"
@@ -23,7 +23,8 @@
     "url": "git://github.com/ddsky/unibox.git"
   },
   "authors": [
-    "David Urbansky <davidurbansky@gmail.com>"
+    "David Urbansky <davidurbansky@gmail.com>",
+    "Simon Schabel"
   ],
   "description": "A jQuery search suggest plugin.",
   "keywords": [

@@ -105,7 +105,7 @@ var UniBox = function() {
 
         var markers = {};
         $.each(words, function(key, word) {
-            if (word.length < 2) {
+            if (word.length < 1) {
                 return;
             }
             //string = string.replace(new RegExp(word,'gi'),'<span>'+word+'</span>');

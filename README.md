@@ -9,7 +9,7 @@ Example on the [best recipe search engine spoonacular.com](http://spoonacular.co
 
 ![](https://github.com/ddsky/unibox/blob/master/img/unibox-on-spoonacular.png?raw=true "unibox on spoonacular")
 
-Example on the [semantic product search engine semfox.com](http://semfox.com) (not public). Here, the instant visual feedback is shown prominently above the query.
+Example on the [semantic product search engine semknox.com](http://semknox.com) (not public). Here, the instant visual feedback is shown prominently above the query.
 
 ![](https://github.com/ddsky/unibox/blob/master/img/unibox-on-semfox.png?raw=true "unibox on semfox")
 
@@ -36,10 +36,13 @@ var settings = {
   instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
   throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
   extraHtml: undefined, // extra HTML code that is shown in each search suggest
+  ivfImagePath: '', // the path to prepend to the instant visual feedback images
+  placeholder: undefined, // the placeholder to be put in the search field
   highlight: true, // whether matched words should be highlighted, default: true
   queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
   animationSpeed: 300, // speed of the animations, default: 300ms
-  enterCallback: undefined, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
+  enterCallback: undefined, // callback on what should happen when enter is pressed while the focus is in the search field
+  enterResultCallback: undefined, // callback on what should happen when enter is pressed while the focus is on one of the suggests, default: undefined, meaning the link will be followed
   minChars: 3, // minimum number of characters before the suggests shows, default: 3
   maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
 };

@@ -34,9 +34,10 @@ var settings = {
   suggestUrl: '', // the URL that provides the data for the suggest
   // these are optional:
   instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
+  ivfImagePath: '', // the path to prepend to the instant visual feedback images
+  missingErrorImage: undefined, // a default image in case a suggested image was not found
   throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
   extraHtml: undefined, // extra HTML code that is shown in each search suggest
-  ivfImagePath: '', // the path to prepend to the instant visual feedback images
   placeholder: undefined, // the placeholder to be put in the search field
   highlight: true, // whether matched words should be highlighted, default: true
   queryVisualizationHeadline: '', // A headline for the image visualization, default: empty

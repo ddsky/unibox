@@ -19,6 +19,9 @@ var UniBox = function() {
     // the root path to the instant visual feedback images
     var ivfImagePath = '';
 
+    // if an image is missing, hide it (undefined) or show a placeholder image
+    var missingErrorImage;
+
     // the number of ms before the update of the search box is triggered
     var throttleTime;
 
@@ -152,7 +155,9 @@ var UniBox = function() {
                 var suggestLine = '<div class="unibox-selectable">';
 
                 if (suggest['image'] != undefined) {
-                    suggestLine += '<div class="unibox-selectable-img-container"><img src="'+suggest['image']+'"/></div>';
+                    var imageUrl =  suggest['image'].length === 0 && missingErrorImage ? missingErrorImage : suggest['image'].length === 0 || suggest['image'].indexOf("/") === 0 || suggest['image'].indexOf("http") === 0?suggest['image']:ivfImagePath+suggest['image'];
+
+                    suggestLine += '<div class="unibox-selectable-img-container"><img src="'+imageUrl+'"/></div>';
                 }
 
                 if (suggest['link'] != undefined) {
@@ -264,7 +269,11 @@ var UniBox = function() {
         ivfWords = newIvfWords;
 
         jQuery("img").error(function () {
-            jQuery(this).hide();
+            if(missingErrorImage){
+                jQuery(this).attr('src', missingErrorImage);
+            }else{
+                jQuery(this).hide();
+            }
         });
 
         //// position it
@@ -376,9 +385,13 @@ var UniBox = function() {
         }
 
         if (inputText.length >= minChars) {
-            jQuery.ajax(suggestUrl+encodeURIComponent(inputText),{dataType:'json', success: function(data) {
-                updateSuggestBox(data);
-            }});
+            jQuery.ajax({
+                url: suggestUrl+encodeURIComponent(inputText),
+                dataType: 'json',
+                success: function(data) {
+                    updateSuggestBox(data);
+                }
+            });
         }
 
     }
@@ -407,6 +420,7 @@ var UniBox = function() {
             extraHtml = options.extraHtml;
             suggestUrl = options.suggestUrl;
             ivfImagePath = options.ivfImagePath;
+            missingErrorImage = options.missingErrorImage;
             throttleTime = options.throttleTime;
             animationSpeed = options.animationSpeed;
             minChars = options.minChars;
@@ -475,6 +489,7 @@ var UniBox = function() {
             // these are the defaults.
             suggestUrl: '',
             ivfImagePath: '',
+            missingErrorImage: undefined,
             queryVisualizationHeadline: '',
             highlight: true,
             throttleTime: 50,

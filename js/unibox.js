@@ -19,6 +19,9 @@ var UniBox = function() {
     // the root path to the instant visual feedback images
     var ivfImagePath = '';
 
+    // the vertical offset of the ivf images
+    var ivfImageOffset = -80;
+
     // if an image is missing, hide it (undefined) or show a placeholder image
     var missingErrorImage;
 
@@ -251,7 +254,7 @@ var UniBox = function() {
 
                     visImage = jQuery('<div class="unibox-ivf"><img src="'+ivfImagePath+word['image']+'" alt="'+word['name']+'"></div>');
                     visImage.css('left', getSearchBoxOffset().left + posLeft - 10);
-                    visImage.css('top', getSearchBoxOffset().top - searchBox.outerHeight() - 80);
+                    visImage.css('top', getSearchBoxOffset().top - searchBox.outerHeight() + ivfImageOffset);
                     //searchBoxParent.find('#unibox').append(visImage);
                     searchBoxParent.append(visImage);
                     setTimeout(function() {searchBoxParent.find('.unibox-ivf').find('img').addClass('l'); }, 10);
@@ -420,6 +423,7 @@ var UniBox = function() {
             extraHtml = options.extraHtml;
             suggestUrl = options.suggestUrl;
             ivfImagePath = options.ivfImagePath;
+            ivfImageOffset = options.ivfImageOffset;
             missingErrorImage = options.missingErrorImage;
             throttleTime = options.throttleTime;
             animationSpeed = options.animationSpeed;
@@ -489,6 +493,7 @@ var UniBox = function() {
             // these are the defaults.
             suggestUrl: '',
             ivfImagePath: '',
+            ivfImageOffset: -80,
             missingErrorImage: undefined,
             queryVisualizationHeadline: '',
             highlight: true,

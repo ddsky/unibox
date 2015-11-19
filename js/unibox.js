@@ -110,16 +110,23 @@ var UniBox = function() {
         var words = searchString.split(' ');
 
         var markers = {};
-        jQuery.each(words, function(key, word) {
+        $.each(words, function(key, word) {
             if (word.length < 1) {
                 return;
             }
-            //string = string.replace(new RegExp(word,'gi'),'<span>'+word+'</span>');
-            string = string.replace(new RegExp(word,'gi'),'##'+key+'##');
-            markers['##'+key+'##'] = '<span>'+word+'</span>';
+
+            var matches = string.match(new RegExp("("+word+")",'gi'));
+            if (matches != null) {
+                for (var i = 0; i < matches.length; i++) {
+                    var match = matches[i];
+                    string = string.replace(new RegExp(match,'g'),'##'+key+"-"+i+'##');
+                    markers['##'+key+"-"+i+'##'] = '<span>'+match+'</span>';
+                }
+            }
+
         });
 
-        jQuery.each(markers, function(marker, replacement) {
+        $.each(markers, function(marker, replacement) {
             string = string.replace(new RegExp(marker,'gi'),replacement);
         });
 

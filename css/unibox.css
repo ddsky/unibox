@@ -107,3 +107,32 @@ img.unibox-vis {
     -webkit-transform:rotateX(0deg) translateY(0%);
     transform:rotateX(0deg) translateY(0%);
 }
+
+#unibox-dab-holder{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 20px;
+	height: 32px;
+	border: none;
+	background-color: #fff;
+	z-index: 9999;
+	display: none;
+}
+#unibox-dab{
+	position: absolute;
+	top: 50%;
+	left: 0;
+	margin-top: -6px;
+	width: 12px;
+	height: 12px;
+	border: 1px solid #666;
+	border-radius: 50%;
+	font-size: 12px;
+	line-height: 12px;
+	vertical-align: middle;
+	text-align: center;
+	cursor: pointer;
+	color: #666;
+}
+#unibox-dab:before { content:"\00d7"; }

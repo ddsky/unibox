@@ -64,6 +64,9 @@ var UniBox = function() {
     // remember the last key stroke to avoid showing the suggests after enter
     var lastKeyCode = -1;
 
+    // show 'delete all' (x) button when focus hits back to input field
+    var showDeleteAllButton = false;
+
     // hide the search suggests
     function hideSuggests(event) {
 
@@ -213,7 +216,7 @@ var UniBox = function() {
         selectedEntryIndex = -1;
 
         // click handler on selectables
-        selectables.click(function() {
+        selectables.mousedown(function() {
             var q = jQuery(this).find('span').first().text();
             searchBox.val(q);
             var href = undefined;
@@ -440,6 +443,7 @@ var UniBox = function() {
             placeholder = options.placeholder;
             instantVisualFeedback = options.instantVisualFeedback;
             queryVisualizationHeadline = options.queryVisualizationHeadline;
+            showDeleteAllButton = options.showDeleteAllButton;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -473,8 +477,33 @@ var UniBox = function() {
                 event.stopPropagation();
             });
 
-            // set placeholder if defined, remove input of the search box
-            if (placeholder != undefined) {
+            // handling the placeholder
+            // check if original input has placeholder attribute
+            var originalPlaceholder = searchBox.attr('placeholder');
+            // if so, then assign to placeholder and use from now on
+            placeholder = originalPlaceholder && originalPlaceholder.length > 0 ? originalPlaceholder : placeholder;
+            // if placeholder is now undefined and length > 0 go on, else no placeholder at all
+            if(placeholder && placeholder.length > 0){
+                // check if browser supports HTML5 placeholder
+                var testInput = document.createElement('input');
+
+                // emulate HTML5 placeholder behaviour
+                if(!('placeholder' in testInput)){
+                    searchBox.focus(function(){
+                        var localPlaceholder = jQuery(this).attr('placeholder');
+                        if ((localPlaceholder) && (localPlaceholder.length > 0) && (localPlaceholder != '') && jQuery(this).val() == localPlaceholder) {
+                            jQuery(this).val('').removeClass('hasPlaceholder');
+                        }
+                    }).blur(function(){
+                        var localPlaceholder = jQuery(this).attr('placeholder');
+                        if ((localPlaceholder) && (localPlaceholder.length > 0) && (localPlaceholder != '') && (jQuery(this).val() == '' || jQuery(this).val() == localPlaceholder)) {
+                            jQuery(this).val(localPlaceholder).addClass('hasPlaceholder');
+                        }
+                    });
+
+                    // set placeholder if defined, remove input of the search box
+                    searchBox.val(placeholder);
+                }
                 searchBox.attr('placeholder', placeholder);
                 searchBox.val('');
             }
@@ -512,7 +541,8 @@ var UniBox = function() {
             placeholder: undefined,
             extraHtml: undefined,
             minChars: 3,
-            maxWidth: searchBox.outerWidth()
+            maxWidth: searchBox.outerWidth(),
+            showDeleteAllButton: false
         }, options);
 
         var individualUnibox = new UniBox();

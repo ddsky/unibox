@@ -67,6 +67,9 @@ var UniBox = function() {
     // show 'delete all' (x) button when focus hits back to input field
     var showDeleteAllButton = false;
 
+    // sort suggests by this array, if empty, use given array order
+    var suggestOrder = [];
+
     // hide the search suggests
     function hideSuggests(event) {
 
@@ -154,8 +157,15 @@ var UniBox = function() {
         var showSuggestBox = false;
 
         // suggest
-        jQuery.each(data['suggests'], function(key, values) {
+        var suggestOrderToUse = Object.keys(data['suggests']);
+        if(suggestOrder && suggestOrder.length > 0){
+            suggestOrderToUse = suggestOrder;
+            jQuery.each(Object.keys(data['suggests']), function(i,o){if($.inArray(o, suggestOrderToUse) < 0)suggestOrderToUse.push(o)});
+        }
 
+        jQuery.each(suggestOrderToUse, function(idx, key) {
+            var values = data['suggests'][key];
+            if(!values)return true;
             var suggestSet = jQuery('<div class="unibox-suggest-'+key+'"></div>');
 
             if (key.replace(/_/,'').length > 0 && values.length > 0) {
@@ -444,6 +454,7 @@ var UniBox = function() {
             instantVisualFeedback = options.instantVisualFeedback;
             queryVisualizationHeadline = options.queryVisualizationHeadline;
             showDeleteAllButton = options.showDeleteAllButton;
+            suggestOrder= options.suggestOrder;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -467,6 +478,7 @@ var UniBox = function() {
             searchBox.blur(function() {
                 suggestBox.slideUp(animationSpeed);
             });
+            suggestBox.mouseenter(function(){suggestBox.find('.unibox-selectable.active').removeClass('active')});
 
             // click outside of suggest div closes it
             jQuery('html').click(function() {
@@ -505,12 +517,46 @@ var UniBox = function() {
                     searchBox.val(placeholder);
                 }
                 searchBox.attr('placeholder', placeholder);
-                searchBox.val('');
             }
 
             // copy search box styles to an invisible element so we can determine the text width
             var invisible = jQuery('<div id="unibox-invisible">&nbsp;<span>&nbsp;</span></div>');
             searchBox.parent().append(invisible);
+
+            // if showDeleteAllButton == true, prepare button
+            if(showDeleteAllButton){
+                var dab = jQuery('<div id="unibox-dab-holder"><div id="unibox-dab"></div></div>');
+                searchBoxParent.append(dab);
+                // Events:
+                // if clicking the deleteAllButton erase the search field
+                jQuery(dab).mousedown(function(e){
+                    (e || window.event).stopPropagation();
+                    searchBox.val('');
+                    searchBox.focus();
+                    return false;
+                });
+                searchBox.focus(function(){
+                    if(searchBox.val().length>0){
+                        dab.show();
+                    }else{
+                        dab.hide();
+                    }
+                }).blur(function(){
+                    dab.hide();
+                }).keydown(function(){
+                    if(jQuery(this).val().length >0)jQuery(dab).show();
+                });
+                // CSS:
+                // put some padding to the right of the search field
+                var sbPaddingRight = parseInt(searchBox.css('paddingRight').replace('px','').trim());
+                searchBox.css('paddingRight', (sbPaddingRight>25)?sbPaddingRight:25);
+                // css for dab: respect border width and height of search field
+                var heightOfSb = searchBox.outerHeight();
+                var borderWidthOfSb = parseInt(searchBox.css('borderTopWidth').replace('px','').trim());
+                dab.height(heightOfSb - (2*borderWidthOfSb));
+                dab.css('marginTop', borderWidthOfSb);
+                dab.css('marginRight', borderWidthOfSb);
+            }
 
             if (instantVisualFeedback == 'none') {
                 jQuery('#unibox-invisible').css('display','none');
@@ -542,7 +588,8 @@ var UniBox = function() {
             extraHtml: undefined,
             minChars: 3,
             maxWidth: searchBox.outerWidth(),
-            showDeleteAllButton: false
+            showDeleteAllButton: false,
+            suggestOrder: []
         }, options);
 
         var individualUnibox = new UniBox();

@@ -233,7 +233,9 @@ var UniBox = function() {
             try {
                 href = jQuery(this).find('a').attr('href');
             } catch (e) {}
-            enterCallbackResult.call(this, q, href);
+            if (enterCallbackResult != undefined) {
+                enterCallbackResult.call(this, q, href);
+            }
             hideSuggests();
         });
 

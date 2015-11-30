@@ -227,7 +227,7 @@ var UniBox = function() {
 
         // click handler on selectables
         selectables.mousedown(function() {
-            var q = jQuery(this).find('span').first().text();
+            var q = jQuery(this).text();
             searchBox.val(q);
             var href = undefined;
             try {

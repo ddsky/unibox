@@ -116,7 +116,7 @@ var UniBox = function() {
         var words = searchString.split(' ');
 
         var markers = {};
-        $.each(words, function(key, word) {
+        jQuery.each(words, function(key, word) {
             if (word.length < 1) {
                 return;
             }
@@ -132,7 +132,7 @@ var UniBox = function() {
 
         });
 
-        $.each(markers, function(marker, replacement) {
+        jQuery.each(markers, function(marker, replacement) {
             string = string.replace(new RegExp(marker,'gi'),replacement);
         });
 
@@ -160,7 +160,7 @@ var UniBox = function() {
         var suggestOrderToUse = Object.keys(data['suggests']);
         if(suggestOrder && suggestOrder.length > 0){
             suggestOrderToUse = suggestOrder;
-            jQuery.each(Object.keys(data['suggests']), function(i,o){if($.inArray(o, suggestOrderToUse) < 0)suggestOrderToUse.push(o)});
+            jQuery.each(Object.keys(data['suggests']), function(i,o){if(jQuery.inArray(o, suggestOrderToUse) < 0)suggestOrderToUse.push(o)});
         }
 
         jQuery.each(suggestOrderToUse, function(idx, key) {

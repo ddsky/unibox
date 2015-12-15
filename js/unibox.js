@@ -166,7 +166,7 @@ var UniBox = function() {
         jQuery.each(suggestOrderToUse, function(idx, key) {
             var values = data['suggests'][key];
             if(!values)return true;
-            var suggestSet = jQuery('<div class="unibox-suggest-'+key+'"></div>');
+            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-'+key+'"></div>');
 
             if (key.replace(/_/,'').length > 0 && values.length > 0) {
                 var keyNode = jQuery('<h4>'+key+'</h4>');
@@ -549,15 +549,23 @@ var UniBox = function() {
                     if(jQuery(this).val().length >0)jQuery(dab).show();
                 });
                 // CSS:
+                // css height for dab: respect border width and height of search field and box shadow
+                var sbPaddingTop = parseInt(searchBox.css('paddingTop').replace('px','').trim());
+                var heightOfSb = searchBox.outerHeight();
+                var borderWidthOfSb = parseInt(searchBox.css('borderTopWidth').replace('px','').trim());
+                var shadowInfo = searchBox.css('boxShadow').match(/\d{1,3}px/g);
+                var shadowOfSb = (shadowInfo && shadowInfo.length > 2)?parseInt(shadowInfo[2].replace('px','').trim()):0;
+                dab.height(heightOfSb - (2*borderWidthOfSb) - shadowOfSb - sbPaddingTop);
+
                 // put some padding to the right of the search field
                 var sbPaddingRight = parseInt(searchBox.css('paddingRight').replace('px','').trim());
                 searchBox.css('paddingRight', (sbPaddingRight>25)?sbPaddingRight:25);
-                // css for dab: respect border width and height of search field
-                var heightOfSb = searchBox.outerHeight();
-                var borderWidthOfSb = parseInt(searchBox.css('borderTopWidth').replace('px','').trim());
-                dab.height(heightOfSb - (2*borderWidthOfSb));
-                dab.css('marginTop', borderWidthOfSb);
-                dab.css('marginRight', borderWidthOfSb);
+
+                // calc position of dab inside parent of searchbox
+                var topDistance = borderWidthOfSb + shadowOfSb + (searchBox.offset().top - searchBox.parent().offset().top - searchBox.parent().scrollTop() );
+                dab.css('top', topDistance);
+                dab.css('left', searchBox.outerWidth() - dab.outerWidth() - borderWidthOfSb);
+
             }
 
             if (instantVisualFeedback == 'none') {

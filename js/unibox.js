@@ -70,6 +70,9 @@ var UniBox = function() {
     // sort suggests by this array, if empty, use given array order
     var suggestOrder = [];
 
+    // move through selectables by this cluster order. if empty, use naturally given order by selectables
+    var suggestSelectionOrder = [];
+
     // hide the search suggests
     function hideSuggests(event) {
 
@@ -221,17 +224,24 @@ var UniBox = function() {
             suggestBox.append(suggestSet);
         });
 
-        //// update selectables for cursor navigation
-        selectables = searchBoxParent.find('.unibox-selectable');
+        //// update selectables for cursor navigation, use given order
+        if(suggestSelectionOrder && suggestSelectionOrder.length > 0){
+            selectables = [];
+            jQuery.each(suggestSelectionOrder, function(idx, item){
+                selectables = selectables.concat(searchBoxParent.find('.unibox-suggest-' + item + ':first .unibox-selectable').get());
+            });
+        }else{
+            selectables = searchBoxParent.find('.unibox-selectable');
+        }
         selectedEntryIndex = -1;
 
         // click handler on selectables
-        selectables.mousedown(function() {
+        jQuery(selectables).mousedown(function() {
             var q = jQuery(this).text();
             searchBox.val(q);
             var href = undefined;
             try {
-                href = jQuery(this).find('a').attr('href');
+                href = jQuery(this).find('a:first').attr('href');
             } catch (e) {}
             if (enterCallbackResult != undefined) {
                 enterCallbackResult.call(this, q, href);
@@ -356,11 +366,14 @@ var UniBox = function() {
         else if (event.keyCode == 40) {
             selectedEntryIndex++;
         }
+        else if (event.keyCode == 38 && selectedEntryIndex <= 0) {
+            selectedEntryIndex = ((selectedEntryIndex!= -1)?selectedEntryIndex-1:selectedEntryIndex) + selectables.length;
+        }
 
         // mark the selected selectable
         if (selectables.length > 0 && selectedEntryIndex > -1) {
             selectedEntryIndex = selectedEntryIndex % selectables.length;
-            selectables.removeClass('active');
+            jQuery(selectables).removeClass('active');
             var selected = jQuery(selectables[selectedEntryIndex]);
 
             selected.addClass('active');
@@ -372,12 +385,14 @@ var UniBox = function() {
                 var selectedText = searchBox.val();
                 var href = undefined;
                 if (selectedEntryIndex != -1) {
-                    selectedText = jQuery(searchBoxParent.find('.unibox-selectable.active span')[0]).text();
+                    selectedText = jQuery(searchBoxParent.find('.unibox-selectable.active')[0]).text();
                     searchBox.val(selectedText);
                     try {
                         href = jQuery(searchBoxParent.find('.unibox-selectable.active')[0]).find('a').attr('href');
                     } catch (e) {}
-                    enterCallbackResult.call(this, selectedText, href);
+                    if (enterCallbackResult != undefined) {
+                        enterCallbackResult.call(this, selectedText, href);
+                    }
                 }
             } else if (selectedEntryIndex != -1) {
                 window.location.href = jQuery(searchBoxParent.find('.unibox-selectable.active')[0]).find('a').attr('href');
@@ -457,6 +472,7 @@ var UniBox = function() {
             queryVisualizationHeadline = options.queryVisualizationHeadline;
             showDeleteAllButton = options.showDeleteAllButton;
             suggestOrder= options.suggestOrder;
+            suggestSelectionOrder= options.suggestSelectionOrder;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -599,7 +615,8 @@ var UniBox = function() {
             minChars: 3,
             maxWidth: searchBox.outerWidth(),
             showDeleteAllButton: false,
-            suggestOrder: []
+            suggestOrder: [],
+            suggestSelectionOrder: []
         }, options);
 
         var individualUnibox = new UniBox();

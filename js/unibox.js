@@ -594,35 +594,47 @@ var UniBox = function() {
 (function(jQuery) {
 
     jQuery.fn.unibox = function(options) {
-        var searchBox = this;
 
-        // settings with default options.
-        var settings = jQuery.extend({
-            // these are the defaults.
-            suggestUrl: '',
-            ivfImagePath: '',
-            ivfImageOffset: -80,
-            missingErrorImage: undefined,
-            queryVisualizationHeadline: '',
-            highlight: true,
-            throttleTime: 50,
-            animationSpeed: 300,
-            instantVisualFeedback: 'all',
-            enterCallback: undefined,
-            enterCallbackResult: undefined,
-            placeholder: undefined,
-            extraHtml: undefined,
-            minChars: 3,
-            maxWidth: searchBox.outerWidth(),
-            showDeleteAllButton: false,
-            suggestOrder: [],
-            suggestSelectionOrder: []
-        }, options);
+        var matches = jQuery(this.selector);
 
-        var individualUnibox = new UniBox();
-        individualUnibox.init(searchBox, settings);
+        var boxes = [];
+        for (var i = 0; i < matches.length; i++) {
+            var searchBox = jQuery(matches[i]);
 
-        return individualUnibox;
+            // settings with default options.
+            var settings = jQuery.extend({
+                // these are the defaults.
+                suggestUrl: '',
+                ivfImagePath: '',
+                ivfImageOffset: -80,
+                missingErrorImage: undefined,
+                queryVisualizationHeadline: '',
+                highlight: true,
+                throttleTime: 50,
+                animationSpeed: 300,
+                instantVisualFeedback: 'all',
+                enterCallback: undefined,
+                enterCallbackResult: undefined,
+                placeholder: undefined,
+                extraHtml: undefined,
+                minChars: 3,
+                maxWidth: searchBox.outerWidth(),
+                showDeleteAllButton: false,
+                suggestOrder: [],
+                suggestSelectionOrder: []
+            }, options);
+
+            var individualUnibox = new UniBox();
+            individualUnibox.init(searchBox, settings);
+
+            boxes.push(individualUnibox);
+        }
+
+        if (boxes.length == 1) {
+            return boxes[0];
+        }
+
+        return boxes;
     };
 
 }(jQuery));

@@ -45,7 +45,11 @@
         <div id="main">
             <div id="head">
                 <form>
-                    <input id="searchInput" type="text" />
+                    <input id="searchInput" class="s" type="text" />
+                    <input type="submit" value="search" />
+                </form>
+                <form>
+                    <input id="searchInput2" class="s" type="text" />
                     <input type="submit" value="search" />
                 </form>
             </div>
@@ -94,6 +98,9 @@
 
                 // apply the settings to an input that should get the unibox
                 $("#searchInput").unibox(settings);
+
+                // apply to multiple boxes
+//                $(".s").unibox(settings);
 
             });
 

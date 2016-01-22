@@ -1,4 +1,4 @@
-var UniBox = function() {
+var UniBox = function () {
     //// common vars
 
     // index of selected entry
@@ -64,6 +64,11 @@ var UniBox = function() {
     // remember the last key stroke to avoid showing the suggests after enter
     var lastKeyCode = -1;
 
+    // remember the last input, this is important because requests are asynchronous,
+    // if we search for "sam" (takes 2 seconds") and then keep typing to search for "samsonite" (takes 1 second) the
+    // results for the previous input will come in later and replace the results for "samsonite"
+    var currentInput = "";
+
     // show 'delete all' (x) button when focus hits back to input field
     var showDeleteAllButton = false;
 
@@ -100,12 +105,12 @@ var UniBox = function() {
 
     }
 
-    function throttle(f, delay){
+    function throttle(f, delay) {
         var timer = null;
-        return function(){
+        return function () {
             var context = this, args = arguments;
             clearTimeout(timer);
-            timer = window.setTimeout(function(){
+            timer = window.setTimeout(function () {
                 f.apply(context, args);
             }, delay || 50);
         };
@@ -119,31 +124,31 @@ var UniBox = function() {
         var words = searchString.split(' ');
 
         var markers = {};
-        jQuery.each(words, function(key, word) {
+        jQuery.each(words, function (key, word) {
             if (word.length < 1) {
                 return;
             }
 
-            var matches = string.match(new RegExp("("+word+")",'gi'));
+            var matches = string.match(new RegExp("(" + word + ")", 'gi'));
             if (matches != null) {
                 for (var i = 0; i < matches.length; i++) {
                     var match = matches[i];
-                    string = string.replace(new RegExp(match,'g'),'##'+key+"-"+i+'##');
-                    markers['##'+key+"-"+i+'##'] = '<span>'+match+'</span>';
+                    string = string.replace(new RegExp(match, 'g'), '##' + key + "-" + i + '##');
+                    markers['##' + key + "-" + i + '##'] = '<span>' + match + '</span>';
                 }
             }
 
         });
 
-        jQuery.each(markers, function(marker, replacement) {
-            string = string.replace(new RegExp(marker,'gi'),replacement);
+        jQuery.each(markers, function (marker, replacement) {
+            string = string.replace(new RegExp(marker, 'gi'), replacement);
         });
 
         return string;
     }
 
     // update suggest box when new data is given
-    function updateSuggestBox(data){
+    function updateSuggestBox(data) {
 
         // don't do anything if the last key was enter
         if (lastKeyCode == 13) {
@@ -161,37 +166,41 @@ var UniBox = function() {
 
         // suggest
         var suggestOrderToUse = Object.keys(data['suggests']);
-        if(suggestOrder && suggestOrder.length > 0){
+        if (suggestOrder && suggestOrder.length > 0) {
             suggestOrderToUse = suggestOrder;
-            jQuery.each(Object.keys(data['suggests']), function(i,o){if(jQuery.inArray(o, suggestOrderToUse) < 0)suggestOrderToUse.push(o)});
+            jQuery.each(Object.keys(data['suggests']), function (i, o) {
+                if (jQuery.inArray(o, suggestOrderToUse) < 0)suggestOrderToUse.push(o)
+            });
         }
 
-        jQuery.each(suggestOrderToUse, function(idx, key) {
+        jQuery.each(suggestOrderToUse, function (idx, key) {
             var values = data['suggests'][key];
-            if(!values)return true;
-            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-'+key+'"></div>');
+            if (!values) {
+                return true;
+            }
+            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + key + '"></div>');
 
-            if (key.replace(/_/,'').length > 0 && values.length > 0) {
-                var keyNode = jQuery('<h4>'+key+'</h4>');
+            if (key.replace(/_/, '').length > 0 && values.length > 0) {
+                var keyNode = jQuery('<h4>' + key + '</h4>');
                 suggestSet.append(keyNode);
             }
 
-            jQuery.each(values, function(index, suggest) {
+            jQuery.each(values, function (index, suggest) {
 
                 var suggestLine = '<div class="unibox-selectable">';
 
                 if (suggest['image'] != undefined) {
-                    var imageUrl =  suggest['image'].length === 0 && missingErrorImage ? missingErrorImage : suggest['image'].length === 0 || suggest['image'].indexOf("/") === 0 || suggest['image'].indexOf("http") === 0?suggest['image']:ivfImagePath+suggest['image'];
+                    var imageUrl = suggest['image'].length === 0 && missingErrorImage ? missingErrorImage : suggest['image'].length === 0 || suggest['image'].indexOf("/") === 0 || suggest['image'].indexOf("http") === 0 ? suggest['image'] : ivfImagePath + suggest['image'];
 
-                    suggestLine += '<div class="unibox-selectable-img-container"><img src="'+imageUrl+'"/></div>';
+                    suggestLine += '<div class="unibox-selectable-img-container"><img src="' + imageUrl + '"/></div>';
                 }
 
                 if (suggest['link'] != undefined) {
-                    suggestLine += '<a href="'+suggest['link']+'">';
-                    suggestLine += highlightSearchWords(suggest['name'],searchString);
+                    suggestLine += '<a href="' + suggest['link'] + '">';
+                    suggestLine += highlightSearchWords(suggest['name'], searchString);
                     suggestLine += '</a>';
                 } else {
-                    suggestLine += '<span>' + highlightSearchWords(suggest['name'],searchString) + '</span>';
+                    suggestLine += '<span>' + highlightSearchWords(suggest['name'], searchString) + '</span>';
                 }
 
                 if (extraHtml != undefined) {
@@ -200,17 +209,17 @@ var UniBox = function() {
 
                     var missedMatch = false;
                     for (var m in matches) {
-                        var variable = matches[m].replace(/#/g,'');
+                        var variable = matches[m].replace(/#/g, '');
                         var replacement = suggest[variable];
                         if (replacement == undefined) {
                             missedMatch = true;
                             continue;
                         }
-                        var re = new RegExp(matches[m],'g');
-                        extraHtmlFilled = extraHtmlFilled.replace(re,replacement);
+                        var re = new RegExp(matches[m], 'g');
+                        extraHtmlFilled = extraHtmlFilled.replace(re, replacement);
                     }
                     if (!missedMatch) {
-                        suggestLine += '<div class="unibox-extra">'+extraHtmlFilled+'</div>';
+                        suggestLine += '<div class="unibox-extra">' + extraHtmlFilled + '</div>';
                     }
                 }
 
@@ -225,24 +234,25 @@ var UniBox = function() {
         });
 
         //// update selectables for cursor navigation, use given order
-        if(suggestSelectionOrder && suggestSelectionOrder.length > 0){
+        if (suggestSelectionOrder && suggestSelectionOrder.length > 0) {
             selectables = [];
-            jQuery.each(suggestSelectionOrder, function(idx, item){
+            jQuery.each(suggestSelectionOrder, function (idx, item) {
                 selectables = selectables.concat(searchBoxParent.find('.unibox-suggest-' + item + ':first .unibox-selectable').get());
             });
-        }else{
+        } else {
             selectables = searchBoxParent.find('.unibox-selectable');
         }
         selectedEntryIndex = -1;
 
         // click handler on selectables
-        jQuery(selectables).mousedown(function() {
+        jQuery(selectables).mousedown(function () {
             var q = jQuery(this).text();
             searchBox.val(q);
             var href = undefined;
             try {
                 href = jQuery(this).find('a:first').attr('href');
-            } catch (e) {}
+            } catch (e) {
+            }
             if (enterCallbackResult != undefined) {
                 enterCallbackResult.call(this, q, href);
             }
@@ -250,46 +260,48 @@ var UniBox = function() {
         });
 
         // click handler on selectables
-        searchBoxParent.find('.unibox-selectable .unibox-extra').click(function() {
+        searchBoxParent.find('.unibox-selectable .unibox-extra').click(function () {
             event.stopPropagation();
         });
 
         // trigger words / visualization
         if (data['words'].length > 0 && queryVisualizationHeadline.length > 0 && (instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
-            suggestBox.append('<h4>'+queryVisualizationHeadline+'</h4>');
+            suggestBox.append('<h4>' + queryVisualizationHeadline + '</h4>');
             showSuggestBox = true;
         }
 
         var newIvfWords = [];
 
-        jQuery.each(data['words'], function(key, word) {
+        jQuery.each(data['words'], function (key, word) {
 
             if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
                 if (word['overlayImage'] != undefined) {
-                    suggestBox.append('<img class="unibox-vis" src="'+ivfImagePath+word['overlayImage'] +'" style="background-image: url(\''+ivfImagePath+word['image']+'\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');
+                    suggestBox.append('<img class="unibox-vis" src="' + ivfImagePath + word['overlayImage'] + '" style="background-image: url(\'' + ivfImagePath + word['image'] + '\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');
                 } else if (word['image'] != undefined) {
-                    suggestBox.append('<img class="unibox-vis" src="'+ivfImagePath+word['image']+'">');
+                    suggestBox.append('<img class="unibox-vis" src="' + ivfImagePath + word['image'] + '">');
                 }
             }
 
             var invisibleBox = searchBoxParent.find('#unibox-invisible');
-            invisibleBox.html(searchString.replace(new RegExp(word['name'],'gi'),'<span>'+word['name']+'</span>'));
+            invisibleBox.html(searchString.replace(new RegExp(word['name'], 'gi'), '<span>' + word['name'] + '</span>'));
 
             //console.log(word['image']+' : '+jQuery.inArray(word['image'], ivfWords));
 
             // show visuals above search bar
             if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'top') && jQuery.inArray(word['image'], ivfWords) == -1) {
 
-                var span =  searchBoxParent.find('#unibox-invisible span')[0];
+                var span = searchBoxParent.find('#unibox-invisible span')[0];
                 if (span != undefined && word['name'].length > 0 && word['image'] != undefined) {
                     var posLeft = jQuery(span).position().left;
 
-                    visImage = jQuery('<div class="unibox-ivf"><img src="'+ivfImagePath+word['image']+'" alt="'+word['name']+'"></div>');
+                    visImage = jQuery('<div class="unibox-ivf"><img src="' + ivfImagePath + word['image'] + '" alt="' + word['name'] + '"></div>');
                     visImage.css('left', getSearchBoxOffset().left + posLeft - 10);
                     visImage.css('top', getSearchBoxOffset().top - searchBox.outerHeight() + ivfImageOffset);
                     //searchBoxParent.find('#unibox').append(visImage);
                     searchBoxParent.append(visImage);
-                    setTimeout(function() {searchBoxParent.find('.unibox-ivf').find('img').addClass('l'); }, 10);
+                    setTimeout(function () {
+                        searchBoxParent.find('.unibox-ivf').find('img').addClass('l');
+                    }, 10);
 
                     //visImage.find('img').addClass('l');
                     newIvfWords.push(word['image']);
@@ -304,23 +316,23 @@ var UniBox = function() {
         ivfWords = newIvfWords;
 
         jQuery("img").error(function () {
-            if(missingErrorImage){
+            if (missingErrorImage) {
                 jQuery(this).attr('src', missingErrorImage);
-            }else{
+            } else {
                 jQuery(this).hide();
             }
         });
 
         //// position it
-        suggestBox.css('left',getSearchBoxOffset().left);
-        suggestBox.css('top',getSearchBoxOffset().top);
+        suggestBox.css('left', getSearchBoxOffset().left);
+        suggestBox.css('top', getSearchBoxOffset().top);
 
         //// show it
         if (showSuggestBox) {
-            suggestBox.slideDown(animationSpeed, function() {
+            suggestBox.slideDown(animationSpeed, function () {
                 //// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
-                suggestBox.css('left',getSearchBoxOffset().left);
-                suggestBox.css('top',getSearchBoxOffset().top);
+                suggestBox.css('left', getSearchBoxOffset().left);
+                suggestBox.css('top', getSearchBoxOffset().top);
             });
         } else {
             hideSuggests();
@@ -330,14 +342,19 @@ var UniBox = function() {
 
     function getSearchBoxOffset() {
         //return {left:searchBox.offset().left - searchBoxParent.find('#unibox').offset().left, top: searchBox.offset().top - searchBoxParent.find('#unibox').offset().top + searchBox.outerHeight()};
-        return {left:searchBox.offset().left - searchBoxParent.offset().left, top: searchBox.offset().top - searchBoxParent.offset().top + searchBox.outerHeight()};
+        return {
+            left: searchBox.offset().left - searchBoxParent.offset().left,
+            top: searchBox.offset().top - searchBoxParent.offset().top + searchBox.outerHeight()
+        };
     }
 
     function updateIvf() {
-        var shownWords = searchBoxParent.find('.unibox-ivf img').map(function(){return jQuery(this).attr('src');}).get();
+        var shownWords = searchBoxParent.find('.unibox-ivf img').map(function () {
+            return jQuery(this).attr('src');
+        }).get();
         for (var i = 0; i < shownWords.length; i++) {
-            if (jQuery.inArray(shownWords[i].replace(ivfImagePath,''),ivfWords) == -1) {
-                searchBoxParent.find('.unibox-ivf:has(img[src*="'+shownWords[i]+'"])').remove();
+            if (jQuery.inArray(shownWords[i].replace(ivfImagePath, ''), ivfWords) == -1) {
+                searchBoxParent.find('.unibox-ivf:has(img[src*="' + shownWords[i] + '"])').remove();
             }
         }
     }
@@ -367,7 +384,7 @@ var UniBox = function() {
             selectedEntryIndex++;
         }
         else if (event.keyCode == 38 && selectedEntryIndex <= 0) {
-            selectedEntryIndex = ((selectedEntryIndex!= -1)?selectedEntryIndex-1:selectedEntryIndex) + selectables.length;
+            selectedEntryIndex = ((selectedEntryIndex != -1) ? selectedEntryIndex - 1 : selectedEntryIndex) + selectables.length;
         }
 
         // mark the selected selectable
@@ -389,7 +406,8 @@ var UniBox = function() {
                     searchBox.val(selectedText);
                     try {
                         href = jQuery(searchBoxParent.find('.unibox-selectable.active')[0]).find('a').attr('href');
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                     if (enterCallbackResult != undefined) {
                         enterCallbackResult.call(this, selectedText, href);
                     }
@@ -425,11 +443,17 @@ var UniBox = function() {
         }
 
         if (inputText.length >= minChars) {
+            currentInput = inputText;
             jQuery.ajax({
-                url: suggestUrl+encodeURIComponent(inputText),
+                usedQuery: inputText,
+                url: suggestUrl + encodeURIComponent(inputText),
                 dataType: 'json',
-                success: function(data) {
-                    updateSuggestBox(data);
+                success: function (data) {
+                    if (this.usedQuery == currentInput) {
+                        updateSuggestBox(data);
+                    }
+                    //console.log('used query: ' + usedQuery);
+                    //console.log('currentInput: ' + currentInput);
                 }
             });
         }
@@ -438,22 +462,22 @@ var UniBox = function() {
 
     // return an object, through closure all methods keep bound to returned object
     return {
-        updateSuggestUrl: function(newUrl) {
+        updateSuggestUrl: function (newUrl) {
             suggestUrl = newUrl;
         },
-        hideSuggestBox: function() {
+        hideSuggestBox: function () {
             hideSuggests();
         },
-        setIvfImagePath: function(path) {
+        setIvfImagePath: function (path) {
             ivfImagePath = path;
-            if (ivfImagePath.charAt(ivfImagePath.length-1) != '/') {
+            if (ivfImagePath.charAt(ivfImagePath.length - 1) != '/') {
                 ivfImagePath += '/';
             }
         },
-        changeInstantVisualFeedbackState: function(state) {
+        changeInstantVisualFeedbackState: function (state) {
             instantVisualFeedback = state;
         },
-        init: function(searchBoxObject, options) {
+        init: function (searchBoxObject, options) {
             searchBox = searchBoxObject;
             searchBoxParent = searchBox.parent();
             highlight = options.highlight;
@@ -471,8 +495,8 @@ var UniBox = function() {
             instantVisualFeedback = options.instantVisualFeedback;
             queryVisualizationHeadline = options.queryVisualizationHeadline;
             showDeleteAllButton = options.showDeleteAllButton;
-            suggestOrder= options.suggestOrder;
-            suggestSelectionOrder= options.suggestSelectionOrder;
+            suggestOrder = options.suggestOrder;
+            suggestSelectionOrder = options.suggestSelectionOrder;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -482,28 +506,30 @@ var UniBox = function() {
             searchBoxParent.append(suggestBox);
             var pos = searchBoxParent.css('position');
             if (pos != 'absolute') {
-                searchBoxParent.css('position','relative');
+                searchBoxParent.css('position', 'relative');
             }
-            var borderSize = suggestBox.css('border-width').replace('px','');
-            suggestBox.css('min-width', searchBox.outerWidth()-2*borderSize);
-            suggestBox.css('max-width', options.maxWidth-2*borderSize);
+            var borderSize = suggestBox.css('border-width').replace('px', '');
+            suggestBox.css('min-width', searchBox.outerWidth() - 2 * borderSize);
+            suggestBox.css('max-width', options.maxWidth - 2 * borderSize);
 
             // add event listeners
             searchBox.keydown(scrollList);
-            searchBox.keydown(throttle(searchSuggest,throttleTime));
+            searchBox.keydown(throttle(searchSuggest, throttleTime));
             searchBox.keyup(hideSuggests);
 
-            searchBox.blur(function() {
+            searchBox.blur(function () {
                 suggestBox.slideUp(animationSpeed);
             });
-            suggestBox.mouseenter(function(){suggestBox.find('.unibox-selectable.active').removeClass('active')});
+            suggestBox.mouseenter(function () {
+                suggestBox.find('.unibox-selectable.active').removeClass('active')
+            });
 
             // click outside of suggest div closes it
-            jQuery('html').click(function() {
+            jQuery('html').click(function () {
                 suggestBox.slideUp(animationSpeed);
             });
 
-            suggestBox.click(function(event){
+            suggestBox.click(function (event) {
                 event.stopPropagation();
             });
 
@@ -513,18 +539,18 @@ var UniBox = function() {
             // if so, then assign to placeholder and use from now on
             placeholder = originalPlaceholder && originalPlaceholder.length > 0 ? originalPlaceholder : placeholder;
             // if placeholder is now undefined and length > 0 go on, else no placeholder at all
-            if(placeholder && placeholder.length > 0){
+            if (placeholder && placeholder.length > 0) {
                 // check if browser supports HTML5 placeholder
                 var testInput = document.createElement('input');
 
                 // emulate HTML5 placeholder behaviour
-                if(!('placeholder' in testInput)){
-                    searchBox.focus(function(){
+                if (!('placeholder' in testInput)) {
+                    searchBox.focus(function () {
                         var localPlaceholder = jQuery(this).attr('placeholder');
                         if ((localPlaceholder) && (localPlaceholder.length > 0) && (localPlaceholder != '') && jQuery(this).val() == localPlaceholder) {
                             jQuery(this).val('').removeClass('hasPlaceholder');
                         }
-                    }).blur(function(){
+                    }).blur(function () {
                         var localPlaceholder = jQuery(this).attr('placeholder');
                         if ((localPlaceholder) && (localPlaceholder.length > 0) && (localPlaceholder != '') && (jQuery(this).val() == '' || jQuery(this).val() == localPlaceholder)) {
                             jQuery(this).val(localPlaceholder).addClass('hasPlaceholder');
@@ -542,40 +568,40 @@ var UniBox = function() {
             searchBox.parent().append(invisible);
 
             // if showDeleteAllButton == true, prepare button
-            if(showDeleteAllButton){
+            if (showDeleteAllButton) {
                 var dab = jQuery('<div id="unibox-dab-holder"><div id="unibox-dab"></div></div>');
                 searchBoxParent.append(dab);
                 // Events:
                 // if clicking the deleteAllButton erase the search field
-                jQuery(dab).mousedown(function(e){
+                jQuery(dab).mousedown(function (e) {
                     (e || window.event).stopPropagation();
                     searchBox.val('');
                     searchBox.focus();
                     return false;
                 });
-                searchBox.focus(function(){
-                    if(searchBox.val().length>0){
+                searchBox.focus(function () {
+                    if (searchBox.val().length > 0) {
                         dab.show();
-                    }else{
+                    } else {
                         dab.hide();
                     }
-                }).blur(function(){
+                }).blur(function () {
                     dab.hide();
-                }).keydown(function(){
-                    if(jQuery(this).val().length >0)jQuery(dab).show();
+                }).keydown(function () {
+                    if (jQuery(this).val().length > 0)jQuery(dab).show();
                 });
                 // CSS:
                 // css height for dab: respect border width and height of search field and box shadow
-                var sbPaddingTop = parseInt(searchBox.css('paddingTop').replace('px','').trim());
+                var sbPaddingTop = parseInt(searchBox.css('paddingTop').replace('px', '').trim());
                 var heightOfSb = searchBox.outerHeight();
-                var borderWidthOfSb = parseInt(searchBox.css('borderTopWidth').replace('px','').trim());
+                var borderWidthOfSb = parseInt(searchBox.css('borderTopWidth').replace('px', '').trim());
                 var shadowInfo = searchBox.css('boxShadow').match(/\d{1,3}px/g);
-                var shadowOfSb = (shadowInfo && shadowInfo.length > 2)?parseInt(shadowInfo[2].replace('px','').trim()):0;
-                dab.height(heightOfSb - (2*borderWidthOfSb) - shadowOfSb - sbPaddingTop);
+                var shadowOfSb = (shadowInfo && shadowInfo.length > 2) ? parseInt(shadowInfo[2].replace('px', '').trim()) : 0;
+                dab.height(heightOfSb - (2 * borderWidthOfSb) - shadowOfSb - sbPaddingTop);
 
                 // put some padding to the right of the search field
-                var sbPaddingRight = parseInt(searchBox.css('paddingRight').replace('px','').trim());
-                searchBox.css('paddingRight', (sbPaddingRight>25)?sbPaddingRight:25);
+                var sbPaddingRight = parseInt(searchBox.css('paddingRight').replace('px', '').trim());
+                searchBox.css('paddingRight', (sbPaddingRight > 25) ? sbPaddingRight : 25);
 
                 // calc position of dab inside parent of searchbox
                 var topDistance = borderWidthOfSb + shadowOfSb + (searchBox.offset().top - searchBox.parent().offset().top - searchBox.parent().scrollTop() );
@@ -585,15 +611,15 @@ var UniBox = function() {
             }
 
             if (instantVisualFeedback == 'none') {
-                jQuery('#unibox-invisible').css('display','none');
+                jQuery('#unibox-invisible').css('display', 'none');
             }
         }
     }
 };
 
-(function(jQuery) {
+(function (jQuery) {
 
-    jQuery.fn.unibox = function(options) {
+    jQuery.fn.unibox = function (options) {
 
         var matches = jQuery(this.selector);
 

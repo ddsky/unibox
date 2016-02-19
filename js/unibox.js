@@ -178,7 +178,18 @@ var UniBox = function () {
             if (!values) {
                 return true;
             }
-            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + key + '"></div>');
+
+            // check if other arrays have content, if this suggestion-block is the only on, mark it via css class
+            var countOtherSuggestionValues = 0;
+            jQuery.each(suggestOrderToUse, function (idx, sKey) {
+                var values = data['suggests'][sKey];
+                if (!values || key === sKey || values.length == 0) {
+                    return true;
+                }
+                countOtherSuggestionValues += values.length;
+            });
+
+            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + key + ' ' + ('unibox-'+ values.length + '-entries') + ' ' + (countOtherSuggestionValues == 0?'unibox-single-suggestion-block':'') + '"></div>');
 
             if (key.replace(/_/, '').length > 0 && values.length > 0) {
                 var keyNode = jQuery('<h4>' + key + '</h4>');
@@ -601,12 +612,13 @@ var UniBox = function () {
 
                 // put some padding to the right of the search field
                 var sbPaddingRight = parseInt(searchBox.css('paddingRight').replace('px', '').trim());
-                searchBox.css('paddingRight', (sbPaddingRight > 25) ? sbPaddingRight : 25);
+                sbPaddingRight = (sbPaddingRight > 25) ? sbPaddingRight : 25;
+                searchBox.css('paddingRight', sbPaddingRight);
 
                 // calc position of dab inside parent of searchbox
                 var topDistance = borderWidthOfSb + shadowOfSb + (searchBox.offset().top - searchBox.parent().offset().top - searchBox.parent().scrollTop() );
                 dab.css('top', topDistance);
-                dab.css('left', searchBox.outerWidth() - dab.outerWidth() - borderWidthOfSb);
+                dab.css('left', searchBox.outerWidth() - dab.outerWidth() - borderWidthOfSb - sbPaddingRight);
 
             }
 
@@ -621,12 +633,8 @@ var UniBox = function () {
 
     jQuery.fn.unibox = function (options) {
 
-        var matches = jQuery(this.selector);
-
-        var boxes = [];
-        for (var i = 0; i < matches.length; i++) {
-            var searchBox = jQuery(matches[i]);
-
+        var boxes = this.map(function(idx, searchBox){
+            searchBox = $(searchBox);
             // settings with default options.
             var settings = jQuery.extend({
                 // these are the defaults.
@@ -653,8 +661,8 @@ var UniBox = function () {
             var individualUnibox = new UniBox();
             individualUnibox.init(searchBox, settings);
 
-            boxes.push(individualUnibox);
-        }
+            return individualUnibox;
+        });
 
         if (boxes.length == 1) {
             return boxes[0];

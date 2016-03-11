@@ -65,7 +65,7 @@ var UniBox = function () {
     var lastKeyCode = -1;
 
     // remember the last input, this is important because requests are asynchronous,
-    // if we search for "sam" (takes 2 seconds") and then keep typing to search for "samsonite" (takes 1 second) the
+    // if we search for "sam" (takes 2 seconds) and then keep typing to search for "samsonite" (takes 1 second) the
     // results for the previous input will come in later and replace the results for "samsonite"
     var currentInput = "";
 
@@ -123,26 +123,37 @@ var UniBox = function () {
         }
         var words = searchString.split(' ');
 
+        // sort words by length, longest first
+        words.sort(function(a, b){
+            return b.length - a.length; // ASC -> a - b; DESC -> b - a
+        });
+
         var markers = {};
-        jQuery.each(words, function (key, word) {
+        jQuery.each(words, function (idx, word) {
             if (word.length < 1) {
                 return;
             }
 
-            var matches = string.match(new RegExp("(" + word + ")", 'gi'));
+            var matches = string.match(new RegExp("((" + word + ")(?!#<##|-\\d+#<##))(?!.*\\1)", 'gi'));
             if (matches != null) {
                 for (var i = 0; i < matches.length; i++) {
                     var match = matches[i];
-                    string = string.replace(new RegExp(match, 'g'), '##' + key + "-" + i + '##');
-                    markers['##' + key + "-" + i + '##'] = '<span>' + match + '</span>';
+                    string = string.replace(new RegExp('(' + match + ')(?!#<##|-\\d+#<##)', 'g'), '##>#' + idx + "-" + i + '#<##');
+                    markers['##>#' + idx + "-" + i + '#<##'] = '<span class="unibox-highlight">' + match + '</span>';
                 }
             }
 
         });
 
-        jQuery.each(markers, function (marker, replacement) {
-            string = string.replace(new RegExp(marker, 'gi'), replacement);
-        });
+        var reversedMarkerKeys = Object.keys(markers).reverse();
+        for(var i = 0; i < reversedMarkerKeys.length; i++){
+            var singleMarker = reversedMarkerKeys[i];
+            var replacement = markers[singleMarker];
+            string = string.replace(new RegExp(singleMarker, 'gi'), replacement);
+        }
+
+        /*jQuery.each(markers.reverse(), function (marker, replacement) {
+        });*/
 
         return string;
     }
@@ -616,10 +627,10 @@ var UniBox = function () {
                 searchBox.css('paddingRight', sbPaddingRight);
 
                 // calc position of dab inside parent of searchbox
-                var topDistance = borderWidthOfSb + shadowOfSb + (searchBox.offset().top - searchBox.parent().offset().top - searchBox.parent().scrollTop() );
+                var topDistance =  borderWidthOfSb + shadowOfSb + (searchBox.offset().top - searchBox.parent().offset().top - searchBox.parent().scrollTop() );
+                var leftDistance = Math.abs(searchBox[0].getBoundingClientRect().left - searchBox.parent()[0].getBoundingClientRect().left) + searchBox.outerWidth() - dab.outerWidth() - borderWidthOfSb - sbPaddingRight;
                 dab.css('top', topDistance);
-                dab.css('left', searchBox.outerWidth() - dab.outerWidth() - borderWidthOfSb - sbPaddingRight);
-
+                dab.css('left', leftDistance);
             }
 
             if (instantVisualFeedback == 'none') {

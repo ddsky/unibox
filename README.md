@@ -5,13 +5,15 @@ A Javascript jQuery Plugin for a universal search box with search suggestion.
 
 ## How it Looks Like
 
-Example on the [best recipe search engine spoonacular.com](http://spoonacular.com). Here you can see the instant visual feedback (images showing how you understood the query) within the search suggest.
+Example on the [meal planner site](https://spoonacular.com/meal-planner) spoonacular. Here you can see the instant visual feedback (images showing how you understood the query) within the search suggest.
 
 ![](https://github.com/ddsky/unibox/blob/master/img/unibox-on-spoonacular.png?raw=true "unibox on spoonacular")
 
 Example on the [semantic product search engine semknox.com](http://semknox.com) (not public). Here, the instant visual feedback is shown prominently above the query.
 
 ![](https://github.com/ddsky/unibox/blob/master/img/unibox-on-semfox.png?raw=true "unibox on semfox")
+
+Also unibox is now used by [site search](http://sitesearch360.com) provider Site Search 360.
 
 ## Installation
 

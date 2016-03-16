@@ -153,7 +153,7 @@ var UniBox = function () {
         }
 
         /*jQuery.each(markers.reverse(), function (marker, replacement) {
-        });*/
+         });*/
 
         return string;
     }
@@ -501,7 +501,7 @@ var UniBox = function () {
         },
         init: function (searchBoxObject, options) {
             searchBox = searchBoxObject;
-            searchBoxParent = searchBox.parent();
+            searchBoxParent = options.searchBoxContainer;
             highlight = options.highlight;
             extraHtml = options.extraHtml;
             suggestUrl = options.suggestUrl;
@@ -587,7 +587,7 @@ var UniBox = function () {
 
             // copy search box styles to an invisible element so we can determine the text width
             var invisible = jQuery('<div id="unibox-invisible">&nbsp;<span>&nbsp;</span></div>');
-            searchBox.parent().append(invisible);
+            searchBoxParent.append(invisible);
 
             // if showDeleteAllButton == true, prepare button
             if (showDeleteAllButton) {
@@ -668,6 +668,12 @@ var UniBox = function () {
                 suggestOrder: [],
                 suggestSelectionOrder: []
             }, options);
+
+            if (settings.searchBoxContainerSelector == undefined) {
+                settings.searchBoxContainer = searchBox.parent();
+            } else {
+                settings.searchBoxContainer = $(settings.searchBoxContainerSelector);
+            }
 
             var individualUnibox = new UniBox();
             individualUnibox.init(searchBox, settings);

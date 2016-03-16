@@ -33,6 +33,7 @@ var settings = {
   // these are required:
   suggestUrl: '', // the URL that provides the data for the suggest
   // these are optional:
+  searchBoxContainerSelector: undefined, // suggest will be attached to this container, by default it will be the parent of the search input (e.g. #searchBox)
   instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
   ivfImagePath: '', // the path to prepend to the instant visual feedback images
   ivfImageOffset: -80, // the vertical offset of the ivf images

@@ -48,6 +48,9 @@ var settings = {
   animationSpeed: 300, // speed of the animations, default: 300ms
   enterCallback: undefined, // callback on what should happen when enter is pressed while the focus is in the search field
   enterResultCallback: undefined, // callback on what should happen when enter is pressed while the focus is on one of the suggests, default: undefined, meaning the link will be followed
+  typeCallback: undefined, // callback on keydown events in the search box
+  focusCallback: undefined, // callback on focus events on the search box
+  blurCallback: undefined, // callback on blur events on the search box
   minChars: 3, // minimum number of characters before the suggests shows, default: 3
   maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
 };

@@ -6,7 +6,7 @@
     "search",
     "suggestion"
   ],
-  "version": "1.12.0",
+  "version": "1.13.0",
   "author": {
     "name": "David Urbansky",
     "url": "https://github.com/ddsky/unibox"

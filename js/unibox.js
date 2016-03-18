@@ -52,6 +52,15 @@ var UniBox = function () {
     // the action that should happen if enter is pressed when a suggest result is selected
     var enterCallbackResult;
 
+    // the action that should happen after each registered key stroke in the search field (other than enter)
+    var typeCallback;
+
+    // a callback for on focus events on the search box
+    var focusCallback;
+
+    // a callback for on blur events on the search box
+    var blurCallback;
+
     // the placeholder for the input field
     var placeholder;
 
@@ -392,6 +401,10 @@ var UniBox = function () {
             clearIvf();
         }
 
+        if (typeCallback != undefined) {
+            typeCallback.call(this, searchBox.val());
+        }
+
         // return if NOT up or down is pressed
         if (event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 13) {
             updateIvf();
@@ -513,6 +526,9 @@ var UniBox = function () {
             minChars = options.minChars;
             enterCallback = options.enterCallback;
             enterCallbackResult = options.enterCallbackResult;
+            typeCallback = options.typeCallback;
+            focusCallback = options.focusCallback;
+            blurCallback = options.blurCallback;
             placeholder = options.placeholder;
             instantVisualFeedback = options.instantVisualFeedback;
             queryVisualizationHeadline = options.queryVisualizationHeadline;
@@ -539,9 +555,19 @@ var UniBox = function () {
             searchBox.keydown(throttle(searchSuggest, throttleTime));
             searchBox.keyup(hideSuggests);
 
-            searchBox.blur(function () {
+            searchBox.focusout(function () {
                 suggestBox.slideUp(animationSpeed);
+                if (blurCallback != undefined) {
+                    blurCallback.call(this, jQuery(this).val());
+                }
             });
+
+            searchBox.focus(function () {
+                if (focusCallback != undefined) {
+                    focusCallback.call(this, jQuery(this).val());
+                }
+            });
+
             suggestBox.mouseenter(function () {
                 suggestBox.find('.unibox-selectable.active').removeClass('active')
             });
@@ -660,6 +686,9 @@ var UniBox = function () {
                 instantVisualFeedback: 'all',
                 enterCallback: undefined,
                 enterCallbackResult: undefined,
+                typeCallback: undefined,
+                focusCallback: undefined,
+                blurCallback: undefined,
                 placeholder: undefined,
                 extraHtml: undefined,
                 minChars: 3,

@@ -45,7 +45,7 @@
         <div id="main">
             <div id="head">
                 <form>
-                    <input id="searchInput" class="s" type="text" />
+                    <input id="searchInput" class="s" type="text" placeholder="My search..." />
                     <input type="submit" value="search" />
                 </form>
                 <form>
@@ -78,6 +78,7 @@
 
         <!-- Here comes our unibox configuration -->
         <script>
+            var boxes = [];
 
             $(function() {
 
@@ -86,21 +87,22 @@
                     suggestUrl: '', // the URL that provides the data for the suggest
                     // these are optional:
                     instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
-                    throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
+                    throttleTime: 100, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
                     extraHtml: undefined, // extra HTML code that is shown in each search suggest
                     highlight: true, // whether matched words should be highlighted, default: true
                     queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
-                    animationSpeed: 300, // speed of the animations, default: 300ms
+                    animationSpeed: 200, // speed of the animations, default: 300ms
                     enterCallback: undefined, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
-                    minChars: 3, // minimum number of characters before the suggests shows, default: 3
-                    maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
+                    placeholder: 'Search for something',
+                    minChars: 3 // minimum number of characters before the suggests shows, default: 3
+                    //maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
                 };
 
                 // apply the settings to an input that should get the unibox
-                $("#searchInput").unibox(settings);
+//                $("#searchInput").unibox(settings);
 
                 // apply to multiple boxes
-//                $(".s").unibox(settings);
+                boxes = $(".s").unibox(settings);
 
             });
 

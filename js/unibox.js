@@ -87,6 +87,9 @@ var UniBox = function () {
     // move through selectables by this cluster order. if empty, use naturally given order by selectables
     var suggestSelectionOrder = [];
 
+    // the maximum width of the suggest box, default: as wide as the input box
+    var maxWidth = undefined;
+
     // hide the search suggests
     function hideSuggests(event) {
 
@@ -355,8 +358,9 @@ var UniBox = function () {
         });
 
         //// position it
-        suggestBox.css('left', getSearchBoxOffset().left);
-        suggestBox.css('top', getSearchBoxOffset().top);
+        resizeAndReposition();
+        //suggestBox.css('left', getSearchBoxOffset().left);
+        //suggestBox.css('top', getSearchBoxOffset().top);
 
         //// show it
         if (showSuggestBox) {
@@ -495,6 +499,20 @@ var UniBox = function () {
 
     }
 
+    function resizeAndReposition() {
+        var suggestBox = jQuery('#unibox-suggest-box');
+        var borderSize = suggestBox.css('border-width').replace('px', '');
+        suggestBox.css('min-width', searchBox.outerWidth() - 2 * borderSize);
+        if (maxWidth == undefined) {
+            suggestBox.css('max-width', searchBox.outerWidth() - 2 * borderSize);
+        } else {
+            suggestBox.css('max-width', maxWidth - 2 * borderSize);
+        }
+
+        suggestBox.css('left', getSearchBoxOffset().left);
+        suggestBox.css('top', getSearchBoxOffset().top);
+    }
+
     // return an object, through closure all methods keep bound to returned object
     return {
         updateSuggestUrl: function (newUrl) {
@@ -511,6 +529,9 @@ var UniBox = function () {
         },
         changeInstantVisualFeedbackState: function (state) {
             instantVisualFeedback = state;
+        },
+        render: function() {
+           resizeAndReposition();
         },
         init: function (searchBoxObject, options) {
             searchBox = searchBoxObject;
@@ -535,6 +556,7 @@ var UniBox = function () {
             showDeleteAllButton = options.showDeleteAllButton;
             suggestOrder = options.suggestOrder;
             suggestSelectionOrder = options.suggestSelectionOrder;
+            maxWidth = options.maxWidth;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -710,11 +732,13 @@ var UniBox = function () {
             return individualUnibox;
         });
 
-        if (boxes.length == 1) {
-            return boxes[0];
+        var boxesArray = jQuery.makeArray( boxes )
+
+        if (boxesArray.length == 1) {
+            return boxesArray[0];
         }
 
-        return boxes;
+        return boxesArray;
     };
 
 }(jQuery));

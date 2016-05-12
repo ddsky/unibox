@@ -91,7 +91,7 @@ var UniBox = function () {
     var maxWidth = undefined;
 
     // hide the search suggests
-    function hideSuggests(event) {
+    function resetSuggests(event) {
 
         if (event !== undefined) {
 
@@ -100,7 +100,7 @@ var UniBox = function () {
             // hide if tab, escape, or enter was pressed
             if (event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || inputText.length < minChars) {
 
-                suggestBox.slideUp(animationSpeed);
+                hideSuggests();
 
                 if (event.keyCode == 13 && enterCallback != undefined && selectedEntryIndex == -1) {
                     enterCallback.call(this, inputText);
@@ -111,10 +111,15 @@ var UniBox = function () {
             }
 
         } else {
-            suggestBox.slideUp(animationSpeed);
+            hideSuggests();
             selectedEntryIndex = -1;
         }
 
+    }
+
+    function hideSuggests() {
+        suggestBox.removeClass('uniboxActive');
+        suggestBox.slideUp(animationSpeed);
     }
 
     function throttle(f, delay) {
@@ -145,12 +150,13 @@ var UniBox = function () {
             if (word.length < 1) {
                 return;
             }
-
+            word = word.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
             var matches = string.match(new RegExp("((" + word + ")(?!#<##|-\\d+#<##))(?!.*\\1)", 'gi'));
             if (matches != null) {
                 for (var i = 0; i < matches.length; i++) {
                     var match = matches[i];
-                    string = string.replace(new RegExp('(' + match + ')(?!#<##|-\\d+#<##)', 'g'), '##>#' + idx + "-" + i + '#<##');
+                    var matchEsc = match.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+                    string = string.replace(new RegExp('(' + matchEsc + ')(?!#<##|-\\d+#<##)', 'g'), '##>#' + idx + "-" + i + '#<##');
                     markers['##>#' + idx + "-" + i + '#<##'] = '<span class="unibox-highlight">' + match + '</span>';
                 }
             }
@@ -175,7 +181,7 @@ var UniBox = function () {
 
         // don't do anything if the last key was enter
         if (lastKeyCode == 13) {
-            hideSuggests();
+            resetSuggests();
             return;
         }
 
@@ -290,11 +296,11 @@ var UniBox = function () {
             if (enterCallbackResult != undefined) {
                 enterCallbackResult.call(this, q, href);
             }
-            hideSuggests();
+            resetSuggests();
         });
 
         // click handler on selectables
-        searchBoxParent.find('.unibox-selectable .unibox-extra').click(function () {
+        searchBoxParent.find('.unibox-selectable .unibox-extra').click(function (event) {
             event.stopPropagation();
         });
 
@@ -364,13 +370,22 @@ var UniBox = function () {
 
         //// show it
         if (showSuggestBox) {
-            suggestBox.slideDown(animationSpeed, function () {
+            // if already visible, just update position and set class
+            if (suggestBox.is(':visible')){
+                suggestBox.addClass('uniboxActive');
                 //// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
                 suggestBox.css('left', getSearchBoxOffset().left);
                 suggestBox.css('top', getSearchBoxOffset().top);
-            });
+            }else{ // if suggestbox currently not visible, slide down
+                suggestBox.slideDown(animationSpeed, function () {
+                    suggestBox.addClass('uniboxActive');
+                    //// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
+                    suggestBox.css('left', getSearchBoxOffset().left);
+                    suggestBox.css('top', getSearchBoxOffset().top);
+                });
+            }
         } else {
-            hideSuggests();
+            resetSuggests();
         }
 
     }
@@ -519,7 +534,7 @@ var UniBox = function () {
             suggestUrl = newUrl;
         },
         hideSuggestBox: function () {
-            hideSuggests();
+            resetSuggests();
         },
         setIvfImagePath: function (path) {
             ivfImagePath = path;
@@ -531,7 +546,7 @@ var UniBox = function () {
             instantVisualFeedback = state;
         },
         render: function() {
-           resizeAndReposition();
+            resizeAndReposition();
         },
         init: function (searchBoxObject, options) {
             searchBox = searchBoxObject;
@@ -563,7 +578,7 @@ var UniBox = function () {
 
             // position and size the suggest box
             suggestBox = jQuery('<div id="unibox-suggest-box"></div>');
-            searchBoxParent.append(suggestBox);
+            searchBoxParent.prepend(suggestBox);
             var pos = searchBoxParent.css('position');
             if (pos != 'absolute') {
                 searchBoxParent.css('position', 'relative');
@@ -575,16 +590,20 @@ var UniBox = function () {
             // add event listeners
             searchBox.keydown(scrollList);
             searchBox.keydown(throttle(searchSuggest, throttleTime));
-            searchBox.keyup(hideSuggests);
+            searchBox.keyup(resetSuggests);
 
             searchBox.focusout(function () {
-                suggestBox.slideUp(animationSpeed);
+                hideSuggests();
                 if (blurCallback != undefined) {
                     blurCallback.call(this, jQuery(this).val());
                 }
             });
 
-            searchBox.focus(function () {
+            searchBox.focus(function (e) {
+                e.stopPropagation();
+                if(jQuery(this).val().length > 0){
+                    searchSuggest({keyCode: -1});
+                }
                 if (focusCallback != undefined) {
                     focusCallback.call(this, jQuery(this).val());
                 }
@@ -596,9 +615,13 @@ var UniBox = function () {
 
             // click outside of suggest div closes it
             jQuery('html').click(function () {
-                suggestBox.slideUp(animationSpeed);
+                hideSuggests();
             });
 
+            // disable click event propagation to html element
+            searchBox.click(function (event) {
+                event.stopPropagation();
+            });
             suggestBox.click(function (event) {
                 event.stopPropagation();
             });
@@ -693,7 +716,7 @@ var UniBox = function () {
     jQuery.fn.unibox = function (options) {
 
         var boxes = this.map(function(idx, searchBox){
-            searchBox = $(searchBox);
+            searchBox = jQuery(searchBox);
             // settings with default options.
             var settings = jQuery.extend({
                 // these are the defaults.
@@ -723,7 +746,7 @@ var UniBox = function () {
             if (settings.searchBoxContainerSelector == undefined) {
                 settings.searchBoxContainer = searchBox.parent();
             } else {
-                settings.searchBoxContainer = $(settings.searchBoxContainerSelector);
+                settings.searchBoxContainer = jQuery(settings.searchBoxContainerSelector);
             }
 
             var individualUnibox = new UniBox();
@@ -732,7 +755,7 @@ var UniBox = function () {
             return individualUnibox;
         });
 
-        var boxesArray = jQuery.makeArray( boxes )
+        var boxesArray = jQuery.makeArray(boxes);
 
         if (boxesArray.length == 1) {
             return boxesArray[0];

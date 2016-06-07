@@ -138,7 +138,7 @@ var UniBox = function () {
         if (!highlight) {
             return string;
         }
-        var words = searchString.split(' ');
+        var words = searchString.replace(/[^a-zA-Z0-9äöüÄÖÜß]|\s+|\r?\n|\r/gmi, " ").replace(/\W+/g, " ").split(' ');
 
         // sort words by length, longest first
         words.sort(function(a, b){
@@ -150,7 +150,6 @@ var UniBox = function () {
             if (word.length < 1) {
                 return;
             }
-            word = word.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
             var matches = string.match(new RegExp("((" + word + ")(?!#<##|-\\d+#<##))(?!.*\\1)", 'gi'));
             if (matches != null) {
                 for (var i = 0; i < matches.length; i++) {

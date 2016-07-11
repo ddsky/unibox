@@ -203,11 +203,11 @@ var UniBox = function () {
 
         jQuery.each(suggestOrderToUse, function (idx, key) {
             var values = data['suggests'][key];
-            if (!values) {
+            if (!values || values.length == 0) {
                 return true;
             }
 
-            // check if other arrays have content, if this suggestion-block is the only on, mark it via css class
+            // check if other arrays have content, if this suggestion-block is the only one, mark it via css class
             var countOtherSuggestionValues = 0;
             jQuery.each(suggestOrderToUse, function (idx, sKey) {
                 var values = data['suggests'][sKey];
@@ -217,7 +217,8 @@ var UniBox = function () {
                 countOtherSuggestionValues += values.length;
             });
 
-            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + key + ' ' + ('unibox-'+ values.length + '-entries') + ' ' + (countOtherSuggestionValues == 0?'unibox-single-suggestion-block':'') + '"></div>');
+            var cssKey = key.replace(/[ "§$%&/(){}+*,.;|]/g, '_').toLowerCase();
+            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + cssKey + ' ' + ('unibox-'+ values.length + '-entries') + ' ' + (countOtherSuggestionValues == 0?'unibox-single-suggestion-block':'') + '"></div>');
 
             if (key.replace(/_/, '').length > 0 && values.length > 0) {
                 var keyNode = jQuery('<h4>' + key + '</h4>');
@@ -423,21 +424,51 @@ var UniBox = function () {
             typeCallback.call(this, searchBox.val());
         }
 
-        // return if NOT up or down is pressed
-        if (event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 13) {
+        // return if NO arrow key is pressed
+        if (event.keyCode != 37 && event.keyCode != 38 && event.keyCode != 39 && event.keyCode != 40 && event.keyCode != 13) {
             updateIvf();
             return;
         }
 
-        // if up or down arrows are pressed move selected entry
+        console.log(selectedEntryIndex);
+
+        // if arrows are pressed move selected entry
         if (event.keyCode == 38 && selectedEntryIndex > 0) {
+            // up key: move up one entry
             selectedEntryIndex--;
         }
         else if (event.keyCode == 40) {
+            // down key: move up one entry
             selectedEntryIndex++;
         }
         else if (event.keyCode == 38 && selectedEntryIndex <= 0) {
             selectedEntryIndex = ((selectedEntryIndex != -1) ? selectedEntryIndex - 1 : selectedEntryIndex) + selectables.length;
+        }
+        else if ((event.keyCode == 37 || event.keyCode == 39) && selectedEntryIndex > -1) {
+            // left/right key: move left/up or right/down one content group if we are in the selected entries (selectedEntryIndex > -1)
+            selectedEntryIndex = selectedEntryIndex % selectables.length;
+            var currentSelection = jQuery(selectables[selectedEntryIndex]);
+            var currentCluster = currentSelection.closest('.unibox-suggest-cluster');
+
+            var otherCluster;
+
+            if (event.keyCode == 37) {
+                otherCluster = currentCluster.prev();
+            } else if (event.keyCode == 39) {
+                otherCluster = currentCluster.next();
+            }
+
+            if (otherCluster.hasClass('unibox-suggest-cluster')) {
+                var firstSelectableInCluster = otherCluster.find('div.unibox-selectable')[0];
+                selectedEntryIndex = jQuery( "#unibox-suggest-box div.unibox-selectable" ).index( firstSelectableInCluster );
+            }
+
+            //console.log(jQuery.isEmptyObject(previousCluster));
+            //console.log('current: ');
+            //console.log(currentCluster);
+            //console.log('next: ');
+            //console.log(previousCluster.hasClass('unibox-suggest-cluster'));
+            //selectedEntryIndex--;
         }
 
         // mark the selected selectable
@@ -471,6 +502,10 @@ var UniBox = function () {
 
             return false;
         }
+
+        if (selectedEntryIndex > -1) {
+            event.preventDefault();
+        }
     }
 
     // provide search suggests
@@ -485,7 +520,7 @@ var UniBox = function () {
         lastKeyCode = event.keyCode;
 
         // scroll list when up or down is pressed
-        if (event.keyCode == 38 || event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 9) {
+        if (((event.keyCode == 37 || event.keyCode == 39) && selectedEntryIndex > -1) || event.keyCode == 38 ||event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 9) {
             return;
         }
 

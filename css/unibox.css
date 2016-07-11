@@ -5,7 +5,6 @@ img.unibox-vis {
 
 /* each search suggest line. */
 .unibox-selectable {
-	border-bottom: 1px dotted #ddd;
 	clear: both;
 	position: relative;
 	font-family: sans-serif;

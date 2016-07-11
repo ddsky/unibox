@@ -175,6 +175,10 @@ var UniBox = function () {
         return string;
     }
 
+    function makeCssKey(key) {
+        return key.replace(/[ "§$%&/(){}+*,.;|]/g, '_').toLowerCase();
+    }
+
     // update suggest box when new data is given
     function updateSuggestBox(data) {
 
@@ -217,8 +221,7 @@ var UniBox = function () {
                 countOtherSuggestionValues += values.length;
             });
 
-            var cssKey = key.replace(/[ "§$%&/(){}+*,.;|]/g, '_').toLowerCase();
-            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + cssKey + ' ' + ('unibox-'+ values.length + '-entries') + ' ' + (countOtherSuggestionValues == 0?'unibox-single-suggestion-block':'') + '"></div>');
+            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + makeCssKey(key) + ' ' + ('unibox-'+ values.length + '-entries') + ' ' + (countOtherSuggestionValues == 0?'unibox-single-suggestion-block':'') + '"></div>');
 
             if (key.replace(/_/, '').length > 0 && values.length > 0) {
                 var keyNode = jQuery('<h4>' + key + '</h4>');
@@ -277,7 +280,7 @@ var UniBox = function () {
         if (suggestSelectionOrder && suggestSelectionOrder.length > 0) {
             selectables = [];
             jQuery.each(suggestSelectionOrder, function (idx, item) {
-                selectables = selectables.concat(searchBoxParent.find('.unibox-suggest-' + item + ':first .unibox-selectable').get());
+                selectables = selectables.concat(searchBoxParent.find('.unibox-suggest-' + makeCssKey(item) + ':first .unibox-selectable').get());
             });
         } else {
             selectables = searchBoxParent.find('.unibox-selectable');

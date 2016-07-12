@@ -433,8 +433,6 @@ var UniBox = function () {
             return;
         }
 
-        console.log(selectedEntryIndex);
-
         // if arrows are pressed move selected entry
         if (event.keyCode == 38 && selectedEntryIndex > 0) {
             // up key: move up one entry

@@ -583,6 +583,9 @@ var UniBox = function () {
         render: function() {
             resizeAndReposition();
         },
+        getText: function() {
+            return searchBox.val();
+        },
         init: function (searchBoxObject, options) {
             searchBox = searchBoxObject;
             searchBoxParent = options.searchBoxContainer;

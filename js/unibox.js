@@ -90,6 +90,15 @@ var UniBox = function () {
     // the maximum width of the suggest box, default: as wide as the input box
     var maxWidth = undefined;
 
+    var entityMap = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': '&quot;',
+        "'": '&#39;',
+        "/": '&#x2F;'
+    };
+
     // hide the search suggests
     function resetSuggests(event) {
 
@@ -179,6 +188,12 @@ var UniBox = function () {
         return key.replace(/[ "§$%&/(){}+*,.;|]/g, '_').toLowerCase();
     }
 
+    function escapeHtml(string) {
+        return String(string).replace(/[&<>"'\/]/g, function (s) {
+            return entityMap[s];
+        });
+    }
+
     // update suggest box when new data is given
     function updateSuggestBox(data) {
 
@@ -189,6 +204,7 @@ var UniBox = function () {
         }
 
         var searchString = searchBox.val();
+        var searchStringXss = escapeHtml(searchString);
 
         //// fill the box
         suggestBox.html('');
@@ -240,10 +256,10 @@ var UniBox = function () {
 
                 if (suggest['link'] != undefined) {
                     suggestLine += '<a href="' + suggest['link'] + '">';
-                    suggestLine += highlightSearchWords(suggest['name'], searchString);
+                    suggestLine += highlightSearchWords(suggest['name'], searchStringXss);
                     suggestLine += '</a>';
                 } else {
-                    suggestLine += '<span>' + highlightSearchWords(suggest['name'], searchString) + '</span>';
+                    suggestLine += '<span>' + highlightSearchWords(suggest['name'], searchStringXss) + '</span>';
                 }
 
                 if (extraHtml != undefined) {
@@ -326,7 +342,7 @@ var UniBox = function () {
             }
 
             var invisibleBox = searchBoxParent.find('#unibox-invisible');
-            invisibleBox.html(searchString.replace(new RegExp(word['name'], 'gi'), '<span>' + word['name'] + '</span>'));
+            invisibleBox.html(searchStringXss.replace(new RegExp(word['name'], 'gi'), '<span>' + word['name'] + '</span>'));
 
             //console.log(word['image']+' : '+jQuery.inArray(word['image'], ivfWords));
 

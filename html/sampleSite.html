@@ -92,9 +92,12 @@
                     highlight: true, // whether matched words should be highlighted, default: true
                     queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
                     animationSpeed: 200, // speed of the animations, default: 300ms
-                    enterCallback: undefined, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
+                    enterCallback: function(text,link){console.log(text);}, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
                     placeholder: 'Search for something',
-                    minChars: 3 // minimum number of characters before the suggests shows, default: 3
+                    minChars: 3, // minimum number of characters before the suggests shows, default: 3
+                    suggestOrder: [], // the order of the suggests
+                    suggestSelectionOrder: [], // the order of how they should be selected
+                    noSuggests: '<b>We haven\'t found anything for you, <u>sooorrryyy</u></b>',
                     //maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
                 };
 

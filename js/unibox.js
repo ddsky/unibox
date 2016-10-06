@@ -90,6 +90,9 @@ var UniBox = function () {
     // the maximum width of the suggest box, default: as wide as the input box
     var maxWidth = undefined;
 
+    // the content to show when no suggests are available, if undefined, no suggests will be shown
+    var noSuggests = undefined;
+
     var entityMap = {
         "&": "&amp;",
         "<": "&lt;",
@@ -147,7 +150,7 @@ var UniBox = function () {
         if (!highlight) {
             return string;
         }
-        var words = searchString.replace(/[^a-zA-Z0-9äöüÄÖÜß]|\s+|\r?\n|\r/gmi, " ").replace(/\W+/g, " ").split(' ');
+        var words = searchString.replace(/[^a-zA-Z0-9äöüÄÖÜß]|\s+|\r?\n|\r/gmi, " ").replace(/[^a-zA-Z0-9äöüÄÖÜß]/g, " ").split(' ');
 
         // sort words by length, longest first
         words.sort(function(a, b){
@@ -160,6 +163,7 @@ var UniBox = function () {
                 return;
             }
             var matches = string.match(new RegExp("((" + word + ")(?!#<##|-\\d+#<##))(?!.*\\1)", 'gi'));
+
             if (matches != null) {
                 for (var i = 0; i < matches.length; i++) {
                     var match = matches[i];
@@ -386,6 +390,11 @@ var UniBox = function () {
         resizeAndReposition();
         //suggestBox.css('left', getSearchBoxOffset().left);
         //suggestBox.css('top', getSearchBoxOffset().top);
+
+        if (noSuggests != undefined) {
+            showSuggestBox = true;
+            suggestBox.append(noSuggests);
+        }
 
         //// show it
         if (showSuggestBox) {
@@ -626,6 +635,7 @@ var UniBox = function () {
             suggestOrder = options.suggestOrder;
             suggestSelectionOrder = options.suggestSelectionOrder;
             maxWidth = options.maxWidth;
+            noSuggests = options.noSuggests;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -790,6 +800,7 @@ var UniBox = function () {
                 blurCallback: undefined,
                 placeholder: undefined,
                 extraHtml: undefined,
+                noSuggests: undefined,
                 minChars: 3,
                 maxWidth: searchBox.outerWidth(),
                 showDeleteAllButton: false,

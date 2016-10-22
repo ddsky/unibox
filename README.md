@@ -25,12 +25,11 @@ For suggestions to work you have two parts. First, the unibox.min.js and unibox.
 
 ### Client Side
 
-```
+```html
 <input id="searchBox">
 ```
 
 ```javascript
-
 $("#searchBox").unibox({
   // these are required:
   suggestUrl: '', // the URL that provides the data for the suggest
@@ -87,15 +86,15 @@ That's it already. If you use unibox and want to let me know, I include your usa
 
 ### Notes to keep in mind
 #### Multi UniBoxes
-If you want to initialize more that 1 UniBox in the same page you can wrap the initialization function in an event that triggers when the user switches between input boxes , such as focus 
+If you want to initialize more that one UniBox in the same page you can wrap the initialization function in an event that triggers when the user switches between input boxes , such as focus 
 ```javascript
 $(".usernameBox").focus(function(){
           $(".usernameBox").unibox({
-              suggestUrl: ' path to your server-side', // the URL that provides the data for the suggest
+              suggestUrl: 'path to your server-side', // the URL that provides the data for the suggest
       });
 $(".emailBox").focus(function(){
           $(".emailBox").unibox({
-              suggestUrl: ' path to your server-side', // the URL that provides the data for the suggest
+              suggestUrl: 'path to your server-side', // the URL that provides the data for the suggest
       });
 ```
 #### Bootstrap Fixes
@@ -103,7 +102,7 @@ If you are willing to use bootstrap along with Unibox keep in mind that unibox w
 use this css to fix it
 ```css
 #unibox-invisible{
-         position: absolute!important;
-         /*important for fixing the input-group-addon heights*/
-      }
+   /*important for fixing the input-group-addon heights*/
+   position: absolute !important;   
+}
 ```

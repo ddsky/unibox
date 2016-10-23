@@ -1,0 +1,26 @@
+{
+  "name": "unibox",
+  "version": "1.14.3",
+  "description": "A powerful search suggestion input box.",
+  "main": "unibox.js",
+  "scripts": {
+    "test": "unibox.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddsky/unibox.git"
+  },
+  "keywords": [
+    "jquery-plugin",
+    "ecosystem:jquery",
+    "search",
+    "suggestion",
+    "autocomplete"
+  ],
+  "author": "David Urbansky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ddsky/unibox/issues"
+  },
+  "homepage": "https://github.com/ddsky/unibox#readme"
+}

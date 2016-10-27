@@ -1,6 +1,6 @@
 {
   "name": "unibox",
-  "version": "1.15.3",
+  "version": "1.15.0",
   "main": [
     "js/unibox.min.js",
     "css/unibox.min.css"

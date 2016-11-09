@@ -37,6 +37,9 @@ var UniBox = function () {
     // extra HTML code that is shown in each search suggest
     var extraHtml;
 
+    // callback function to run code on each suggest line, parameters are lineCallback(currentLineString, index, suggestObject)
+    var lineCallback;
+
     // general animation speed
     var animationSpeed = 300;
 
@@ -182,9 +185,6 @@ var UniBox = function () {
             string = string.replace(new RegExp(singleMarker, 'gi'), replacement);
         }
 
-        /*jQuery.each(markers.reverse(), function (marker, replacement) {
-         });*/
-
         return string;
     }
 
@@ -271,14 +271,18 @@ var UniBox = function () {
                     var extraHtmlFilled = extraHtml;
 
                     var missedMatch = false;
-                    for (var m in matches) {
-                        var variable = matches[m].replace(/#/g, '');
+                    for (var i = 0; i < matches.length; i++) {
+                        var match = matches[i];
+                        if(match === undefined || match.length == 0) {
+                            continue;
+                        }
+                        var variable = match.replace(/#/g, '');
                         var replacement = suggest[variable];
                         if (replacement == undefined) {
                             missedMatch = true;
                             continue;
                         }
-                        var re = new RegExp(matches[m], 'g');
+                        var re = new RegExp(match, 'g');
                         extraHtmlFilled = extraHtmlFilled.replace(re, replacement);
                     }
                     if (!missedMatch) {
@@ -287,6 +291,10 @@ var UniBox = function () {
                 }
 
                 suggestLine += '<div class="unibox-ca"></div></div>';
+
+                if(lineCallback !== undefined){
+                    lineCallback.call(this, suggestLine, index, suggest);
+                }
 
                 var suggestNode = jQuery(suggestLine);
                 suggestSet.append(suggestNode);
@@ -489,12 +497,6 @@ var UniBox = function () {
                 selectedEntryIndex = jQuery( "#unibox-suggest-box div.unibox-selectable" ).index( firstSelectableInCluster );
             }
 
-            //console.log(jQuery.isEmptyObject(previousCluster));
-            //console.log('current: ');
-            //console.log(currentCluster);
-            //console.log('next: ');
-            //console.log(previousCluster.hasClass('unibox-suggest-cluster'));
-            //selectedEntryIndex--;
         }
 
         // mark the selected selectable
@@ -616,6 +618,7 @@ var UniBox = function () {
             searchBoxParent = options.searchBoxContainer;
             highlight = options.highlight;
             extraHtml = options.extraHtml;
+            lineCallback = options.lineCallback;
             suggestUrl = options.suggestUrl;
             ivfImagePath = options.ivfImagePath;
             ivfImageOffset = options.ivfImageOffset;
@@ -800,6 +803,7 @@ var UniBox = function () {
                 blurCallback: undefined,
                 placeholder: undefined,
                 extraHtml: undefined,
+                lineCallback: undefined,
                 noSuggests: undefined,
                 minChars: 3,
                 maxWidth: searchBox.outerWidth(),

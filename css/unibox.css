@@ -52,6 +52,7 @@ img.unibox-vis {
 	visibility: hidden;
 	position: relative;
 	text-align: left;
+	height: 0;
 	/** needs to get the same styles as the search box so that width of the text within the search box can be computed */
 }
 

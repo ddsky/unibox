@@ -109,15 +109,14 @@ var UniBox = function () {
     function resetSuggests(event) {
 
         if (event !== undefined) {
-
+            var keyCode = event.keyCode || event.which;
             var inputText = searchBox.val();
 
             // hide if tab, escape, or enter was pressed
-            if (event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 || inputText.length < minChars) {
-
+            if (keyCode == 27 || keyCode == 13 || keyCode == 9 || inputText.length < minChars) {
                 hideSuggests();
 
-                if (event.keyCode == 13 && enterCallback != undefined && selectedEntryIndex == -1) {
+                if (keyCode == 13 && enterCallback !== undefined && selectedEntryIndex == -1) {
                     enterCallback.call(this, inputText);
                 }
 
@@ -133,6 +132,9 @@ var UniBox = function () {
     }
 
     function hideSuggests() {
+        if (blurCallback !== undefined) {
+            blurCallback.call(this, suggestBox.val());
+        }
         suggestBox.removeClass('uniboxActive');
         suggestBox.slideUp(animationSpeed);
     }
@@ -156,7 +158,7 @@ var UniBox = function () {
         var words = searchString.replace(/[^a-zA-Z0-9äöüÄÖÜß]|\s+|\r?\n|\r/gmi, " ").replace(/[^a-zA-Z0-9äöüÄÖÜß]/g, " ").split(' ');
 
         // sort words by length, longest first
-        words.sort(function(a, b){
+        words.sort(function (a, b) {
             return b.length - a.length; // ASC -> a - b; DESC -> b - a
         });
 
@@ -179,7 +181,7 @@ var UniBox = function () {
         });
 
         var reversedMarkerKeys = Object.keys(markers).reverse();
-        for(var i = 0; i < reversedMarkerKeys.length; i++){
+        for (var i = 0; i < reversedMarkerKeys.length; i++) {
             var singleMarker = reversedMarkerKeys[i];
             var replacement = markers[singleMarker];
             string = string.replace(new RegExp(singleMarker, 'gi'), replacement);
@@ -241,7 +243,7 @@ var UniBox = function () {
                 countOtherSuggestionValues += values.length;
             });
 
-            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + makeCssKey(key) + ' ' + ('unibox-'+ values.length + '-entries') + ' ' + (countOtherSuggestionValues == 0?'unibox-single-suggestion-block':'') + '"></div>');
+            var suggestSet = jQuery('<div class="unibox-suggest-cluster unibox-suggest-' + makeCssKey(key) + ' ' + ('unibox-' + values.length + '-entries') + ' ' + (countOtherSuggestionValues == 0 ? 'unibox-single-suggestion-block' : '') + '"></div>');
 
             if (key.replace(/_/, '').length > 0 && values.length > 0) {
                 var keyNode = jQuery('<h4>' + key + '</h4>');
@@ -273,7 +275,7 @@ var UniBox = function () {
                     var missedMatch = false;
                     for (var i = 0; i < matches.length; i++) {
                         var match = matches[i];
-                        if(match === undefined || match.length == 0) {
+                        if (match === undefined || match.length == 0) {
                             continue;
                         }
                         var variable = match.replace(/#/g, '');
@@ -292,8 +294,8 @@ var UniBox = function () {
 
                 suggestLine += '<div class="unibox-ca"></div></div>';
 
-                if(lineCallback !== undefined){
-                    lineCallback.call(this, suggestLine, index, suggest);
+                if (lineCallback !== undefined) {
+                    suggestLine = lineCallback.call(this, suggestLine, key, index, suggest);
                 }
 
                 var suggestNode = jQuery(suggestLine);
@@ -399,7 +401,7 @@ var UniBox = function () {
         //suggestBox.css('left', getSearchBoxOffset().left);
         //suggestBox.css('top', getSearchBoxOffset().top);
 
-        if (noSuggests != undefined) {
+        if (noSuggests != undefined && !showSuggestBox) {
             showSuggestBox = true;
             suggestBox.append(noSuggests);
         }
@@ -407,12 +409,12 @@ var UniBox = function () {
         //// show it
         if (showSuggestBox) {
             // if already visible, just update position and set class
-            if (suggestBox.is(':visible')){
+            if (suggestBox.is(':visible')) {
                 suggestBox.addClass('uniboxActive');
                 //// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
                 suggestBox.css('left', getSearchBoxOffset().left);
                 suggestBox.css('top', getSearchBoxOffset().top);
-            }else{ // if suggestbox currently not visible, slide down
+            } else { // if suggestbox currently not visible, slide down
                 suggestBox.slideDown(animationSpeed, function () {
                     suggestBox.addClass('uniboxActive');
                     //// re-position it (in some cases the slide down moves the search box and the suggest box is not aligned anymore)
@@ -494,7 +496,7 @@ var UniBox = function () {
 
             if (otherCluster.hasClass('unibox-suggest-cluster')) {
                 var firstSelectableInCluster = otherCluster.find('div.unibox-selectable')[0];
-                selectedEntryIndex = jQuery( "#unibox-suggest-box div.unibox-selectable" ).index( firstSelectableInCluster );
+                selectedEntryIndex = jQuery("#unibox-suggest-box div.unibox-selectable").index(firstSelectableInCluster);
             }
 
         }
@@ -548,7 +550,7 @@ var UniBox = function () {
         lastKeyCode = event.keyCode;
 
         // scroll list when up or down is pressed
-        if (((event.keyCode == 37 || event.keyCode == 39) && selectedEntryIndex > -1) || event.keyCode == 38 ||event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 9) {
+        if (((event.keyCode == 37 || event.keyCode == 39) && selectedEntryIndex > -1) || event.keyCode == 38 || event.keyCode == 40 || event.keyCode == 13 || event.keyCode == 9) {
             return;
         }
 
@@ -607,10 +609,10 @@ var UniBox = function () {
         changeInstantVisualFeedbackState: function (state) {
             instantVisualFeedback = state;
         },
-        render: function() {
+        render: function () {
             resizeAndReposition();
         },
-        getText: function() {
+        getText: function () {
             return searchBox.val();
         },
         init: function (searchBoxObject, options) {
@@ -659,19 +661,19 @@ var UniBox = function () {
             searchBox.keydown(throttle(searchSuggest, throttleTime));
             searchBox.keyup(resetSuggests);
 
-            searchBox.focusout(function () {
-                hideSuggests();
-                if (blurCallback != undefined) {
-                    blurCallback.call(this, jQuery(this).val());
-                }
-            });
+            /*searchBox.focusout(function () {
+             hideSuggests();
+             if (blurCallback != undefined) {
+             blurCallback.call(this, jQuery(this).val());
+             }
+             });*/
 
             searchBox.focus(function (e) {
                 e.stopPropagation();
-                if(jQuery(this).val().length > 0){
+                if (jQuery(this).val().length > 0) {
                     searchSuggest({keyCode: -1});
                 }
-                if (focusCallback != undefined) {
+                if (focusCallback !== undefined) {
                     focusCallback.call(this, jQuery(this).val());
                 }
             });
@@ -682,8 +684,26 @@ var UniBox = function () {
 
             // click outside of suggest div closes it
             jQuery('html').click(function () {
-                hideSuggests();
+                if (suggestBox.hasClass('uniboxActive')) {
+                    hideSuggests();
+                }
             });
+
+            // special for tab key (because if shift+tab when getting focus back)
+            searchBox.keydown(function (e) {
+                var keyCode = e.keyCode || e.which;
+                if (keyCode == 9) {
+                    hideSuggests();
+                }
+            });
+            searchBox.focusout(function () {
+                setTimeout(function () {
+                    if (jQuery(document.activeElement).parents('#unibox-suggest-box').length === 0) {
+                        hideSuggests();
+                    }
+                }, 10);
+            });
+
 
             // disable click event propagation to html element
             searchBox.click(function (event) {
@@ -748,7 +768,9 @@ var UniBox = function () {
                 }).blur(function () {
                     dab.hide();
                 }).keydown(function () {
-                    if (jQuery(this).val().length > 0)jQuery(dab).show();
+                    if (jQuery(this).val().length > 0) {
+                        jQuery(dab).show();
+                    }
                 });
                 // CSS:
                 // css height for dab: respect border width and height of search field and box shadow
@@ -765,7 +787,7 @@ var UniBox = function () {
                 searchBox.css('paddingRight', sbPaddingRight);
 
                 // calc position of dab inside parent of searchbox
-                var topDistance =  borderWidthOfSb + shadowOfSb + (searchBox.offset().top - searchBox.parent().offset().top - searchBox.parent().scrollTop() );
+                var topDistance = borderWidthOfSb + shadowOfSb + (searchBox.offset().top - searchBox.parent().offset().top - searchBox.parent().scrollTop() );
                 var leftDistance = Math.abs(searchBox[0].getBoundingClientRect().left - searchBox.parent()[0].getBoundingClientRect().left) + searchBox.outerWidth() - dab.outerWidth() - borderWidthOfSb - sbPaddingRight;
                 dab.css('top', topDistance);
                 dab.css('left', leftDistance);
@@ -782,7 +804,7 @@ var UniBox = function () {
 
     jQuery.fn.unibox = function (options) {
 
-        var boxes = this.map(function(idx, searchBox){
+        var boxes = this.map(function (idx, searchBox) {
             searchBox = jQuery(searchBox);
             // settings with default options.
             var settings = jQuery.extend({

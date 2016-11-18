@@ -261,11 +261,11 @@ var UniBox = function () {
                 }
 
                 if (suggest['link'] != undefined) {
-                    suggestLine += '<a href="' + suggest['link'] + '">';
+                    suggestLine += '<a class="uniboxSearchContent" href="' + suggest['link'] + '">';
                     suggestLine += highlightSearchWords(suggest['name'], searchStringXss);
                     suggestLine += '</a>';
                 } else {
-                    suggestLine += '<span>' + highlightSearchWords(suggest['name'], searchStringXss) + '</span>';
+                    suggestLine += '<span class="uniboxSearchContent">' + highlightSearchWords(suggest['name'], searchStringXss) + '</span>';
                 }
 
                 if (extraHtml != undefined) {
@@ -319,7 +319,7 @@ var UniBox = function () {
 
         // click handler on selectables
         jQuery(selectables).mousedown(function () {
-            var q = jQuery(this).text();
+            var q = jQuery(this).find('.uniboxSearchContent:first').text();
             searchBox.val(q);
             var href = undefined;
             try {

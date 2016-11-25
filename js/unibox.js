@@ -511,6 +511,8 @@ var UniBox = function () {
         }
 
         if (event.keyCode == 13) {
+            event.preventDefault();
+            event.stopPropagation();
 
             if (enterCallbackResult != undefined) {
                 var selectedText = searchBox.val();

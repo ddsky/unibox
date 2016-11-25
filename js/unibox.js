@@ -307,13 +307,16 @@ var UniBox = function () {
         });
 
         //// update selectables for cursor navigation, use given order
+        selectables = searchBoxParent.find('.unibox-selectable');
         if (suggestSelectionOrder && suggestSelectionOrder.length > 0) {
             selectables = [];
             jQuery.each(suggestSelectionOrder, function (idx, item) {
                 selectables = selectables.concat(searchBoxParent.find('.unibox-suggest-' + makeCssKey(item) + ':first .unibox-selectable').get());
             });
-        } else {
-            selectables = searchBoxParent.find('.unibox-selectable');
+            jQuery.each(jQuery.grep(Object.keys(data.suggests), function(elem){if(suggestSelectionOrder.indexOf(elem) < 0)return true}), function (idx, item) {
+                selectables = selectables.concat(searchBoxParent.find('.unibox-suggest-' + makeCssKey(item) + ':first .unibox-selectable').get());
+            });
+
         }
         selectedEntryIndex = -1;
 

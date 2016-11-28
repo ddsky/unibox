@@ -52,6 +52,8 @@ $("#searchBox").unibox({
   blurCallback: undefined, // callback on blur events on the search box
   minChars: 3, // minimum number of characters before the suggests shows, default: 3
   maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
+  suggestOrder: [], // the order of the suggest, e.g. ["recipes","menus","restaurants"]
+  suggestSelectionOrder: [] // the order of the suggest, e.g. ["recipes","menus","restaurants"]
 });
 ```
 

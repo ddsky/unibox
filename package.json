@@ -1,6 +1,6 @@
 {
   "name": "unibox",
-  "version": "1.15.7",
+  "version": "1.15.8",
   "description": "A powerful search suggestion input box.",
   "main": "unibox.js",
   "scripts": {

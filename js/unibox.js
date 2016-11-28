@@ -260,7 +260,7 @@ var UniBox = function () {
                     suggestLine += '<div class="unibox-selectable-img-container"><img src="' + imageUrl + '"/></div>';
                 }
 
-                if (suggest['link'] != undefined) {
+                if (suggest['link'] != undefined && suggest['link'] != '') {
                     suggestLine += '<a class="uniboxSearchContent" href="' + suggest['link'] + '">';
                     suggestLine += highlightSearchWords(suggest['name'], searchStringXss);
                     suggestLine += '</a>';

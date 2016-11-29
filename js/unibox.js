@@ -521,7 +521,7 @@ var UniBox = function () {
                 var selectedText = searchBox.val();
                 var href = undefined;
                 if (selectedEntryIndex != -1) {
-                    selectedText = jQuery(searchBoxParent.find('.unibox-selectable.active')[0]).text();
+                    selectedText = searchBoxParent.find('.unibox-selectable.active .uniboxSearchContent:first').text();
                     searchBox.val(selectedText);
                     try {
                         href = jQuery(searchBoxParent.find('.unibox-selectable.active')[0]).find('a').attr('href');

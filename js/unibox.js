@@ -107,6 +107,7 @@ var UniBox = function () {
 
     // hide the search suggests
     function resetSuggests(event) {
+        event = event || window.event;
 
         if (event !== undefined) {
             var keyCode = event.keyCode || event.which;
@@ -114,26 +115,24 @@ var UniBox = function () {
 
             // hide if tab, escape, or enter was pressed
             if (keyCode == 27 || keyCode == 13 || keyCode == 9 || inputText.length < minChars) {
-                hideSuggests();
+                hideSuggests(event);
 
                 if (keyCode == 13 && enterCallback !== undefined && selectedEntryIndex == -1) {
                     enterCallback.call(this, inputText);
                 }
-
                 selectedEntryIndex = -1;
-
             }
 
         } else {
-            hideSuggests();
+            hideSuggests(event);
             selectedEntryIndex = -1;
         }
 
     }
 
-    function hideSuggests() {
+    function hideSuggests(e) {
         if (blurCallback !== undefined) {
-            blurCallback.call(this, suggestBox.val());
+            blurCallback.call(this, e, suggestBox.val());
         }
         suggestBox.removeClass('uniboxActive');
         suggestBox.slideUp(animationSpeed);
@@ -462,7 +461,7 @@ var UniBox = function () {
         }
 
         if (typeCallback != undefined) {
-            typeCallback.call(this, searchBox.val());
+            typeCallback.call(this, event, searchBox.val());
         }
 
         // return if NO arrow key is pressed
@@ -666,20 +665,21 @@ var UniBox = function () {
             searchBox.keydown(throttle(searchSuggest, throttleTime));
             searchBox.keyup(resetSuggests);
 
-            /*searchBox.focusout(function () {
-             hideSuggests();
+            /*searchBox.focusout(function (e) {
+             hideSuggests(e);
              if (blurCallback != undefined) {
              blurCallback.call(this, jQuery(this).val());
              }
              });*/
 
             searchBox.focus(function (e) {
+                e = e || window.event;
                 e.stopPropagation();
                 if (jQuery(this).val().length > 0) {
                     searchSuggest({keyCode: -1});
                 }
                 if (focusCallback !== undefined) {
-                    focusCallback.call(this, jQuery(this).val());
+                    focusCallback.call(this, e, jQuery(this).val());
                 }
             });
 
@@ -688,23 +688,25 @@ var UniBox = function () {
             });
 
             // click outside of suggest div closes it
-            jQuery('html').click(function () {
+            jQuery('html').click(function (e) {
                 if (suggestBox.hasClass('uniboxActive')) {
-                    hideSuggests();
+                    hideSuggests(e);
                 }
             });
 
             // special for tab key (because if shift+tab when getting focus back)
             searchBox.keydown(function (e) {
+                e = e || window.event;
                 var keyCode = e.keyCode || e.which;
                 if (keyCode == 9) {
-                    hideSuggests();
+                    hideSuggests(e);
                 }
             });
-            searchBox.focusout(function () {
+            searchBox.focusout(function (e) {
+                e = e || window.event;
                 setTimeout(function () {
                     if (jQuery(document.activeElement).parents('#unibox-suggest-box').length === 0) {
-                        hideSuggests();
+                        hideSuggests(e);
                     }
                 }, 10);
             });

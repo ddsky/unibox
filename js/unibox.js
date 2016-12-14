@@ -390,7 +390,7 @@ var UniBox = function () {
 
         ivfWords = newIvfWords;
 
-        jQuery("img").error(function () {
+        jQuery("img").on("error", function() {
             if (missingErrorImage) {
                 jQuery(this).attr('src', missingErrorImage);
             } else {

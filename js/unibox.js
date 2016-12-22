@@ -136,6 +136,7 @@ var UniBox = function () {
         }
         suggestBox.removeClass('uniboxActive');
         suggestBox.slideUp(animationSpeed);
+        clearIvf();
     }
 
     function throttle(f, delay) {
@@ -358,6 +359,7 @@ var UniBox = function () {
             }
 
             var invisibleBox = searchBoxParent.find('#unibox-invisible');
+            invisibleBox.css('padding', searchBox.css('padding'));
             invisibleBox.html(searchStringXss.replace(new RegExp(word['name'], 'gi'), '<span>' + word['name'] + '</span>'));
 
             //console.log(word['image']+' : '+jQuery.inArray(word['image'], ivfWords));

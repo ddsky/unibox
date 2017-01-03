@@ -96,6 +96,9 @@ var UniBox = function () {
     // the content to show when no suggests are available, if undefined, no suggests will be shown
     var noSuggests = undefined;
 
+    // empty query suggests, if someone clicks in the search field, we can show suggests
+    var emptyQuerySuggests = undefined;
+
     var entityMap = {
         "&": "&amp;",
         "<": "&lt;",
@@ -340,57 +343,60 @@ var UniBox = function () {
             event.stopPropagation();
         });
 
-        // trigger words / visualization
-        if (data['words'].length > 0 && queryVisualizationHeadline.length > 0 && (instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
-            suggestBox.append('<h4>' + queryVisualizationHeadline + '</h4>');
-            showSuggestBox = true;
-        }
+        if (data['words'] != undefined) {
 
-        var newIvfWords = [];
-
-        jQuery.each(data['words'], function (key, word) {
-
-            if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
-                if (word['overlayImage'] != undefined) {
-                    suggestBox.append('<img class="unibox-vis" src="' + ivfImagePath + word['overlayImage'] + '" style="background-image: url(\'' + ivfImagePath + word['image'] + '\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');
-                } else if (word['image'] != undefined) {
-                    suggestBox.append('<img class="unibox-vis" src="' + ivfImagePath + word['image'] + '">');
-                }
+            // trigger words / visualization
+            if (data['words'].length > 0 && queryVisualizationHeadline.length > 0 && (instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
+                suggestBox.append('<h4>' + queryVisualizationHeadline + '</h4>');
+                showSuggestBox = true;
             }
 
-            var invisibleBox = searchBoxParent.find('#unibox-invisible');
-            invisibleBox.css('padding', searchBox.css('padding'));
-            invisibleBox.html(searchStringXss.replace(new RegExp(word['name'], 'gi'), '<span>' + word['name'] + '</span>'));
+            var newIvfWords = [];
 
-            //console.log(word['image']+' : '+jQuery.inArray(word['image'], ivfWords));
+            jQuery.each(data['words'], function (key, word) {
 
-            // show visuals above search bar
-            if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'top') && jQuery.inArray(word['image'], ivfWords) == -1) {
+                if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'bottom')) {
+                    if (word['overlayImage'] != undefined) {
+                        suggestBox.append('<img class="unibox-vis" src="' + ivfImagePath + word['overlayImage'] + '" style="background-image: url(\'' + ivfImagePath + word['image'] + '\');background-size: 75%;background-repeat: no-repeat;background-position: center;">');
+                    } else if (word['image'] != undefined) {
+                        suggestBox.append('<img class="unibox-vis" src="' + ivfImagePath + word['image'] + '">');
+                    }
+                }
 
-                var span = searchBoxParent.find('#unibox-invisible span')[0];
-                if (span != undefined && word['name'].length > 0 && word['image'] != undefined) {
-                    var posLeft = jQuery(span).position().left;
+                var invisibleBox = searchBoxParent.find('#unibox-invisible');
+                invisibleBox.css('padding', searchBox.css('padding'));
+                invisibleBox.html(searchStringXss.replace(new RegExp(word['name'], 'gi'), '<span>' + word['name'] + '</span>'));
 
-                    visImage = jQuery('<div class="unibox-ivf"><img src="' + ivfImagePath + word['image'] + '" alt="' + word['name'] + '"></div>');
-                    visImage.css('left', getSearchBoxOffset().left + posLeft - 10);
-                    visImage.css('top', getSearchBoxOffset().top - searchBox.outerHeight() + ivfImageOffset);
-                    //searchBoxParent.find('#unibox').append(visImage);
-                    searchBoxParent.append(visImage);
-                    setTimeout(function () {
-                        searchBoxParent.find('.unibox-ivf').find('img').addClass('l');
-                    }, 10);
+                //console.log(word['image']+' : '+jQuery.inArray(word['image'], ivfWords));
 
-                    //visImage.find('img').addClass('l');
+                // show visuals above search bar
+                if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'top') && jQuery.inArray(word['image'], ivfWords) == -1) {
+
+                    var span = searchBoxParent.find('#unibox-invisible span')[0];
+                    if (span != undefined && word['name'].length > 0 && word['image'] != undefined) {
+                        var posLeft = jQuery(span).position().left;
+
+                        visImage = jQuery('<div class="unibox-ivf"><img src="' + ivfImagePath + word['image'] + '" alt="' + word['name'] + '"></div>');
+                        visImage.css('left', getSearchBoxOffset().left + posLeft - 10);
+                        visImage.css('top', getSearchBoxOffset().top - searchBox.outerHeight() + ivfImageOffset);
+                        //searchBoxParent.find('#unibox').append(visImage);
+                        searchBoxParent.append(visImage);
+                        setTimeout(function () {
+                            searchBoxParent.find('.unibox-ivf').find('img').addClass('l');
+                        }, 10);
+
+                        //visImage.find('img').addClass('l');
+                        newIvfWords.push(word['image']);
+                    }
+
+                } else if (jQuery.inArray(word['image'], ivfWords) > -1) {
                     newIvfWords.push(word['image']);
                 }
 
-            } else if (jQuery.inArray(word['image'], ivfWords) > -1) {
-                newIvfWords.push(word['image']);
-            }
+            });
 
-        });
-
-        ivfWords = newIvfWords;
+            ivfWords = newIvfWords;
+        }
 
         jQuery("img").on("error", function() {
             if (missingErrorImage) {
@@ -600,6 +606,9 @@ var UniBox = function () {
 
     // return an object, through closure all methods keep bound to returned object
     return {
+        updateSuggests: function(data) {
+            updateSuggestBox(data);
+        },
         updateSuggestUrl: function (newUrl) {
             suggestUrl = newUrl;
         },
@@ -647,6 +656,7 @@ var UniBox = function () {
             suggestSelectionOrder = options.suggestSelectionOrder;
             maxWidth = options.maxWidth;
             noSuggests = options.noSuggests;
+            emptyQuerySuggests = options.emptyQuerySuggests;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -677,8 +687,11 @@ var UniBox = function () {
             searchBox.focus(function (e) {
                 e = e || window.event;
                 e.stopPropagation();
+                //console.log(emptyQuerySuggests);
                 if (jQuery(this).val().length > 0) {
                     searchSuggest({keyCode: -1});
+                } else if (emptyQuerySuggests != undefined) {
+                    updateSuggestBox(emptyQuerySuggests);
                 }
                 if (focusCallback !== undefined) {
                     focusCallback.call(this, e, jQuery(this).val());
@@ -836,6 +849,7 @@ var UniBox = function () {
                 extraHtml: undefined,
                 lineCallback: undefined,
                 noSuggests: undefined,
+                emptyQuerySuggests: undefined,
                 minChars: 3,
                 maxWidth: searchBox.outerWidth(),
                 showDeleteAllButton: false,

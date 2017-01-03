@@ -48,6 +48,7 @@
                     <input id="searchInput" class="s" type="text" placeholder="My search..." />
                     <input type="submit" value="search" />
                 </form>
+                <br>
                 <form>
                     <input id="searchInput2" class="s" type="text" />
                     <input type="submit" value="search" />
@@ -84,7 +85,8 @@
 
                 var settings = {
                     // these are required:
-                    suggestUrl: '', // the URL that provides the data for the suggest
+                    suggestUrl: 'http://yourserver.com/suggests?query=', // the URL that provides the data for the suggest
+                    ivfImagePath: 'http://yourserver.com/images/ivf/', // the base path for instant visual feedback images
                     // these are optional:
                     instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
                     throttleTime: 100, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
@@ -92,12 +94,24 @@
                     highlight: true, // whether matched words should be highlighted, default: true
                     queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
                     animationSpeed: 200, // speed of the animations, default: 300ms
-                    enterCallback: function(text,link){console.log(text);}, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
+                    enterCallback: function(text,link){console.log('enter callback: '+text);}, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
+                    enterCallbackResult: function(text,link){console.log('enter callback result: ' + text);}, // callback on what should happen when enter is pressed on a result or a suggest is clicked
                     placeholder: 'Search for something',
                     minChars: 3, // minimum number of characters before the suggests shows, default: 3
                     suggestOrder: [], // the order of the suggests
                     suggestSelectionOrder: [], // the order of how they should be selected
                     noSuggests: '<b>We haven\'t found anything for you, <u>sooorrryyy</u></b>',
+                    emptyQuerySuggests: {
+                                    "suggests":{
+                                        "Cool Things to Check Out":[
+                                            {"id":"1","name":"Mason Jar Lid Lights","link":"https://spoonacular.com/articles/mason-jar-lid-lights","image":"https://spoonacular.com/images/articles/mason-jar-lid-lights.jpg"},
+                                            {"id":"2","name":"Spreadable Beer","link":"https://spoonacular.com/articles/spreadable-beer","image":"https://spoonacular.com/images/articles/spreadable-beer.jpg"}
+                                        ],
+                                        "Products":[
+                                            {"name":"Canon PowerShot SX710 HS","image":"https://images-eu.ssl-images-amazon.com/images/I/41JNvHrzCAL._AC_SY200_.jpg","id":"2179584","link":"https://www.amazon.com/Canon-PowerShot-SX720-HS-Black/dp/B01BV14I40/"},
+                                        ]
+                                    }
+                                },
                     //maxWidth: 400 // the maximum width of the suggest box, default: as wide as the input box
                 };
 
@@ -110,6 +124,7 @@
             });
 
         </script>
+
 
     </body>
 </html>

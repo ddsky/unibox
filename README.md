@@ -53,7 +53,9 @@ $("#searchBox").unibox({
   minChars: 3, // minimum number of characters before the suggests shows, default: 3
   maxWidth: 400, // the maximum width of the suggest box, default: as wide as the input box
   suggestOrder: [], // the order of the suggest, e.g. ["recipes","menus","restaurants"]
-  suggestSelectionOrder: [] // the order of the suggest, e.g. ["recipes","menus","restaurants"]
+  suggestSelectionOrder: [], // the order of the suggest, e.g. ["recipes","menus","restaurants"],
+  showMoreResults: undefined,    // the content to show if there exist another more complete search page
+  disableEventPropagationHTML: false  //disable click event propagation to html element
 });
 ```
 

@@ -99,6 +99,12 @@ var UniBox = function () {
     // empty query suggests, if someone clicks in the search field, we can show suggests
     var emptyQuerySuggests = undefined;
 
+    // the content to show if there exist another more complete search page
+    var showMoreResults = undefined;
+
+    //disable click event propagation to html element
+    var disableEventPropagationHTML = true;
+
     var entityMap = {
         "&": "&amp;",
         "<": "&lt;",
@@ -220,6 +226,9 @@ var UniBox = function () {
 
         // find out whether we have something to show in the first place
         var showSuggestBox = false;
+
+        // set state if no suggestions notice is visible
+        var showNoSuggestions = false;
 
         // suggest
         var suggestOrderToUse = Object.keys(data['suggests']);
@@ -413,6 +422,7 @@ var UniBox = function () {
 
         if (noSuggests != undefined && !showSuggestBox) {
             showSuggestBox = true;
+            showNoSuggestions = true;
             suggestBox.append(noSuggests);
         }
 
@@ -431,6 +441,10 @@ var UniBox = function () {
                     suggestBox.css('left', getSearchBoxOffset().left);
                     suggestBox.css('top', getSearchBoxOffset().top);
                 });
+            }
+
+            if (showMoreResults && !showNoSuggestions) {
+              suggestBox.append(showMoreResults);
             }
         } else {
             resetSuggests();
@@ -657,6 +671,8 @@ var UniBox = function () {
             maxWidth = options.maxWidth;
             noSuggests = options.noSuggests;
             emptyQuerySuggests = options.emptyQuerySuggests;
+            showMoreResults = options.showMoreResults;
+            disableEventPropagationHTML = options.disableEventPropagationHTML;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -728,12 +744,14 @@ var UniBox = function () {
 
 
             // disable click event propagation to html element
-            searchBox.click(function (event) {
+            if (disableEventPropagationHTML) {
+              searchBox.click(function (event) {
                 event.stopPropagation();
-            });
-            suggestBox.click(function (event) {
+              });
+              suggestBox.click(function (event) {
                 event.stopPropagation();
-            });
+              });
+            }
 
             // handling the placeholder
             // check if original input has placeholder attribute

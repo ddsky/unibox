@@ -102,8 +102,8 @@ var UniBox = function () {
     // the content to show if there exist another more complete search page
     var showMoreResults = undefined;
 
-    //disable click event propagation to html element
-    var disableEventPropagationHTML = true;
+    // disable click event propagation to HTML element
+    var disableEventPropagationHtml = true;
 
     var entityMap = {
         "&": "&amp;",
@@ -672,7 +672,7 @@ var UniBox = function () {
             noSuggests = options.noSuggests;
             emptyQuerySuggests = options.emptyQuerySuggests;
             showMoreResults = options.showMoreResults;
-            disableEventPropagationHTML = options.disableEventPropagationHTML;
+            disableEventPropagationHtml = options.disableEventPropagationHtml;
 
             // insert necessary values for inputfield
             searchBox.attr("autocomplete", "off");
@@ -744,13 +744,13 @@ var UniBox = function () {
 
 
             // disable click event propagation to html element
-            if (disableEventPropagationHTML) {
-              searchBox.click(function (event) {
-                event.stopPropagation();
-              });
-              suggestBox.click(function (event) {
-                event.stopPropagation();
-              });
+            if (disableEventPropagationHtml) {
+                searchBox.click(function (event) {
+                    event.stopPropagation();
+                });
+                suggestBox.click(function (event) {
+                    event.stopPropagation();
+                });
             }
 
             // handling the placeholder

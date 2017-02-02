@@ -269,7 +269,13 @@ var UniBox = function () {
                 if (suggest['image'] != undefined) {
                     var imageUrl = suggest['image'].length === 0 && missingErrorImage ? missingErrorImage : suggest['image'].length === 0 || suggest['image'].indexOf("/") === 0 || suggest['image'].indexOf("http") === 0 ? suggest['image'] : ivfImagePath + suggest['image'];
 
-                    suggestLine += '<div class="unibox-selectable-img-container"><img src="' + imageUrl + '"/></div>';
+                    suggestLine += '<div class="unibox-selectable-img-container"><img src="' + imageUrl+'"';
+                    var img = new Image();
+                    img.src = imageUrl;
+                    if(!img.complete){
+                        suggestLine += ' style="display: none;" onload="this.style.display=null;"'
+                    }
+                    suggestLine+='/></div>';
                 }
 
                 if (suggest['link'] != undefined && suggest['link'] != '') {

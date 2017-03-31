@@ -39,6 +39,7 @@ $("#searchBox").unibox({
   ivfImagePath: '', // the path to prepend to the instant visual feedback images
   ivfImageOffset: -80, // the vertical offset of the ivf images
   missingErrorImage: undefined, // a default image in case a suggested image was not found
+  showImagesSuggestions: true, // whether to show images in the search suggestions
   throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
   extraHtml: undefined, // extra HTML code that is shown in each search suggest
   placeholder: undefined, // the placeholder to be put in the search field

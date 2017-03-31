@@ -96,6 +96,9 @@ var UniBox = function () {
     // the content to show when no suggests are available, if undefined, no suggests will be shown
     var noSuggests = undefined;
 
+    // whether to show images
+    var showImagesSuggestions = true;
+
     // empty query suggests, if someone clicks in the search field, we can show suggests
     var emptyQuerySuggests = undefined;
 
@@ -266,7 +269,7 @@ var UniBox = function () {
 
                 var suggestLine = '<div class="unibox-selectable">';
 
-                if (suggest['image'] != undefined) {
+                if (suggest['image'] != undefined && showImagesSuggestions) {
                     var imageUrl = suggest['image'].length === 0 && missingErrorImage ? missingErrorImage : suggest['image'].length === 0 || suggest['image'].indexOf("/") === 0 || suggest['image'].indexOf("http") === 0 ? suggest['image'] : ivfImagePath + suggest['image'];
 
                     suggestLine += '<div class="unibox-selectable-img-container"><img src="' + imageUrl+'"';
@@ -672,6 +675,7 @@ var UniBox = function () {
             instantVisualFeedback = options.instantVisualFeedback;
             queryVisualizationHeadline = options.queryVisualizationHeadline;
             showDeleteAllButton = options.showDeleteAllButton;
+            showImagesSuggestions = options.showImagesSuggestions;
             suggestOrder = options.suggestOrder;
             suggestSelectionOrder = options.suggestSelectionOrder;
             maxWidth = options.maxWidth;

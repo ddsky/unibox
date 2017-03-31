@@ -595,7 +595,7 @@ var UniBox = function () {
             clearIvf();
         }
 
-        if (inputText.length >= minChars) {
+        if (inputText.length >= minChars && suggestUrl != '') {
             currentInput = inputText;
             jQuery.ajax({
                 usedQuery: inputText,

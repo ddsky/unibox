@@ -384,9 +384,7 @@ var UniBox = function () {
                 var invisibleBox = searchBoxParent.find('#unibox-invisible');
                 invisibleBox.css('padding', searchBox.css('padding'));
                 invisibleBox.html(searchStringXss.replace(new RegExp(word['name'], 'gi'), '<span>' + word['name'] + '</span>'));
-
-                //console.log(word['image']+' : '+jQuery.inArray(word['image'], ivfWords));
-
+                
                 // show visuals above search bar
                 if ((instantVisualFeedback == 'all' || instantVisualFeedback == 'top') && jQuery.inArray(word['image'], ivfWords) == -1) {
 
@@ -426,8 +424,6 @@ var UniBox = function () {
 
         //// position it
         resizeAndReposition();
-        //suggestBox.css('left', getSearchBoxOffset().left);
-        //suggestBox.css('top', getSearchBoxOffset().top);
 
         if (noSuggests != undefined && !showSuggestBox) {
             showSuggestBox = true;
@@ -605,8 +601,6 @@ var UniBox = function () {
                     if (this.usedQuery == currentInput) {
                         updateSuggestBox(data);
                     }
-                    //console.log('used query: ' + usedQuery);
-                    //console.log('currentInput: ' + currentInput);
                 }
             });
         }
@@ -751,7 +745,6 @@ var UniBox = function () {
                     }
                 }, 10);
             });
-
 
             // disable click event propagation to html element
             if (disableEventPropagationHtml) {

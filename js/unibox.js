@@ -144,7 +144,11 @@ var UniBox = function () {
 
     function hideSuggests(e) {
         if (blurCallback !== undefined) {
-            blurCallback.call(this, e, suggestBox.val());
+            try {
+                blurCallback.call(this, e, searchBox.val());
+            } catch (ex) {
+                console.log(ex);
+            }
         }
         suggestBox.removeClass('uniboxActive');
         suggestBox.slideUp(animationSpeed);

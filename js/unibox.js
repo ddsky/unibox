@@ -355,7 +355,11 @@ var UniBox = function () {
             } catch (e) {
             }
             if (enterCallbackResult != undefined) {
-                enterCallbackResult.call(this, q, href);
+                try {
+                    enterCallbackResult.call(this, q, href);
+                } catch (ex) {
+                    console.log(ex);
+                }
             }
             resetSuggests();
         });
@@ -492,7 +496,11 @@ var UniBox = function () {
         }
 
         if (typeCallback != undefined) {
-            typeCallback.call(this, event, searchBox.val());
+            try {
+                typeCallback.call(this, event, searchBox.val());
+            } catch (ex) {
+                console.log(ex);
+            }
         }
 
         // return if NO arrow key is pressed
@@ -558,7 +566,11 @@ var UniBox = function () {
                     } catch (e) {
                     }
                     if (enterCallbackResult != undefined) {
-                        enterCallbackResult.call(this, selectedText, href);
+                        try {
+                            enterCallbackResult.call(this, selectedText, href);
+                        } catch (ex) {
+                            console.log(ex);
+                        }
                     }
                 }
             } else if (selectedEntryIndex != -1) {
@@ -718,7 +730,11 @@ var UniBox = function () {
                     updateSuggestBox(emptyQuerySuggests);
                 }
                 if (focusCallback !== undefined) {
-                    focusCallback.call(this, e, jQuery(this).val());
+                    try {
+                        focusCallback.call(this, e, jQuery(this).val());
+                    } catch (ex) {
+                        console.log(ex);
+                    }
                 }
             });
 

@@ -894,6 +894,8 @@ var UniBox = function () {
                 minChars: 3,
                 maxWidth: searchBox.outerWidth(),
                 showDeleteAllButton: false,
+                showImagesSuggestions: true,
+                disableEventPropagationHtml: true,
                 suggestOrder: [],
                 suggestSelectionOrder: []
             }, options);

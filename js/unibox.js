@@ -126,7 +126,7 @@ var UniBox = function () {
             var inputText = searchBox.val();
 
             // hide if tab, escape, or enter was pressed
-            if (keyCode == 27 || keyCode == 13 || keyCode == 9 || inputText.length < minChars) {
+            if (keyCode == 27 || keyCode == 13 || keyCode == 9 || (inputText.length < minChars && emptyQuerySuggests == undefined)) {
                 hideSuggests(event);
 
                 if (keyCode == 13 && enterCallback !== undefined && selectedEntryIndex == -1) {

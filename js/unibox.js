@@ -744,6 +744,15 @@ var UniBox = function () {
 
             // click outside of suggest div closes it
             jQuery('html').click(function (e) {
+                // if empty query suggestions are shown, we don't want them to hide when user clicks on the search in put
+                try {
+                    if (e != undefined && jQuery(e.target).attr('id') == searchBox.attr('id')) {
+                        return;
+                    }
+                } catch (ex) {
+                    console.log(ex);
+                }
+
                 if (suggestBox.hasClass('uniboxActive')) {
                     hideSuggests(e);
                 }

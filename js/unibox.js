@@ -293,6 +293,10 @@ var UniBox = function () {
                     suggestLine += '<span class="uniboxSearchContent">' + highlightSearchWords(suggest['name'], searchStringXss) + '</span>';
                 }
 
+                if (suggest['content'] != undefined && suggest['content'] != '') {
+                    suggestLine += '<p class="unibox-result-content">' + highlightSearchWords(suggest['content'], searchStringXss) + '</p>';
+                }
+
                 if (extraHtml != undefined) {
                     var matches = extraHtml.match(/##(.*?)##/gi);
                     var extraHtmlFilled = extraHtml;

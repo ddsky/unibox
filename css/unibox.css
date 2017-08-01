@@ -145,3 +145,12 @@ img.unibox-vis {
 	margin-left: 3px;
 	margin-top: 1px;
 }
+
+p.unibox-result-content {
+	margin-top: 5px;
+	margin-bottom: 15px;
+}
+
+.unibox-highlight {
+	font-weight: bold;
+}

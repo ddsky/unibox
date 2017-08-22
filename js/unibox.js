@@ -64,6 +64,12 @@ var UniBox = function () {
     // a callback for on blur events on the search box
     var blurCallback;
 
+    // starting to ajax search
+    var loadingCallback;
+
+    // done ajax searching
+    var loadedCallback;
+
     // the placeholder for the input field
     var placeholder;
 
@@ -612,6 +618,11 @@ var UniBox = function () {
         }
 
         if (inputText.length >= minChars && suggestUrl != '') {
+            var self = this;
+            if (loadingCallback) {
+                loadingCallback.call(self, event);
+            }
+
             currentInput = inputText;
             jQuery.ajax({
                 usedQuery: inputText,
@@ -619,6 +630,10 @@ var UniBox = function () {
                 dataType: 'json',
                 success: function (data) {
                     if (this.usedQuery == currentInput) {
+                        if (loadedCallback) {
+                            loadedCallback.call(self, this, data);
+                        }
+                        
                         updateSuggestBox(data);
                     }
                 }
@@ -685,6 +700,8 @@ var UniBox = function () {
             typeCallback = options.typeCallback;
             focusCallback = options.focusCallback;
             blurCallback = options.blurCallback;
+            loadingCallback = options.loadingCallback;
+            loadedCallback = options.loadedCallback;
             placeholder = options.placeholder;
             instantVisualFeedback = options.instantVisualFeedback;
             queryVisualizationHeadline = options.queryVisualizationHeadline;
@@ -899,6 +916,8 @@ var UniBox = function () {
                 typeCallback: undefined,
                 focusCallback: undefined,
                 blurCallback: undefined,
+                loadingCallback: undefined,
+                loadedCallback: undefined,
                 placeholder: undefined,
                 extraHtml: undefined,
                 lineCallback: undefined,

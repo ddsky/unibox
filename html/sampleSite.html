@@ -3,7 +3,6 @@
     <head>
         <meta charset="UTF-8">
         <title>Unibox Sample Implementation</title>
-        <script type="application/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <script type="application/javascript" src="../js/unibox.min.js"></script>
         <link rel="stylesheet" href="../css/unibox.min.css"/>
         <style>
@@ -81,7 +80,7 @@
         <script>
             var boxes = [];
 
-            $(function() {
+            sxQuery(document).ready(function() {
 
                 var settings = {
                     // these are required:
@@ -94,8 +93,10 @@
                     highlight: true, // whether matched words should be highlighted, default: true
                     queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
                     animationSpeed: 200, // speed of the animations, default: 300ms
-                    enterCallback: function(text,link){console.log('enter callback: '+text);}, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
-                    enterCallbackResult: function(text,link){console.log('enter callback result: ' + text);}, // callback on what should happen when enter is pressed on a result or a suggest is clicked
+                    callbacks: {
+                        enter: function(text,link){console.log('enter callback: '+text);}, // callback on what should happen when enter is pressed, default: undefined, meaning the link will be followed
+                        enterResult: function(text,link){console.log('enter callback result: ' + text);}, // callback on what should happen when enter is pressed on a result or a suggest is clicked
+                    },
                     placeholder: 'Search for something',
                     minChars: 3, // minimum number of characters before the suggests shows, default: 3
                     suggestOrder: [], // the order of the suggests
@@ -116,10 +117,8 @@
                 };
 
                 // apply the settings to an input that should get the unibox
-//                $("#searchInput").unibox(settings);
-
                 // apply to multiple boxes
-                boxes = $(".s").unibox(settings);
+                boxes = sxQuery(".s").unibox(settings);
 
             });
 

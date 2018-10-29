@@ -91,8 +91,6 @@
 
     "use strict";
 
-
-    //TODO: return elem list where jquery returns elem list
     
     Object.defineProperty(exports, "__esModule", {
         value: true
@@ -302,7 +300,6 @@
         return el !== undefined && (typeof el === "undefined" ? "undefined" : _typeof(el)) == "object" && !(el instanceof Array);
     };
     
-    //TODO: support promises - .succes() & .fail()
     sxQuery.ajax = function (dataObject) {
         dataObject = dataObject || {};
         var method = dataObject.method || 'GET';
@@ -320,7 +317,6 @@
                     try {
                         success(JSON.parse(response));
                     } catch (e) {
-                        //TODO: read mimetype and parse? see http://api.jquery.com/jquery.ajax/ - dataType
                         console.warn(e);
                         success(response);
                     }
@@ -553,7 +549,6 @@
             }
         };
     
-        //TODO: https://stackoverflow.com/questions/1711357/how-would-you-overload-the-operator-in-javascript Proxy
         this._init = function () {
             for (var i = 0; i < _elems.length; i++) {
                 this[i] = _elems[i];
@@ -563,7 +558,7 @@
         this._init();
     
         //api
-        this.length = _elems.length; //TODO: proxy
+        this.length = _elems.length;
     
         this.push = function (arr) {
             _elems = _elems || [];
@@ -1115,7 +1110,6 @@
         };
     
         this.scrollTop = function (val) {
-            //FIXME: returning different results than jQuery @stackOverFlow
             if (val !== undefined) {
                 this._it(function (elem) {
                     if (elem.scrollTop !== undefined) {

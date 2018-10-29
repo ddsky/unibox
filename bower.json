@@ -15,7 +15,6 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "latest"
   },
   "homepage": "https://github.com/ddsky/unibox",
   "repository": {

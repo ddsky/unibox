@@ -1,7 +1,7 @@
 unibox
 ======
 
-A Javascript jQuery Plugin for a universal search box with search suggestion.
+A Javascript Plugin for a universal search box with search suggestion.
 
 ## How it Looks Like
 
@@ -17,7 +17,7 @@ Also unibox is now used by [site search](http://sitesearch360.com) provider Site
 
 ## Installation
 
-Download the unibox.min.js and unibox.css or simply install via bower writing `bower install unibox`.
+Download the unibox.min.js and unibox.min.css or simply install via bower writing `bower install unibox`.
 
 ## Configuration and Usage
 
@@ -30,33 +30,75 @@ For suggestions to work you have two parts. First, the unibox.min.js and unibox.
 ```
 
 ```javascript
-$("#searchBox").unibox({
-  // these are required:
-  suggestUrl: '', // the URL that provides the data for the suggest
-  // these are optional:
-  searchBoxContainerSelector: undefined, // suggest will be attached to this container, by default it will be the parent of the search input (e.g. #searchBox)
-  instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
-  ivfImagePath: '', // the path to prepend to the instant visual feedback images
-  ivfImageOffset: -80, // the vertical offset of the ivf images
-  missingErrorImage: undefined, // a default image in case a suggested image was not found
-  showImagesSuggestions: true, // whether to show images in the search suggestions
-  throttleTime: 300, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
-  extraHtml: undefined, // extra HTML code that is shown in each search suggest
-  placeholder: undefined, // the placeholder to be put in the search field
-  highlight: true, // whether matched words should be highlighted, default: true
-  queryVisualizationHeadline: '', // A headline for the image visualization, default: empty
-  animationSpeed: 300, // speed of the animations, default: 300ms
-  enterCallback: undefined, // callback on what should happen when enter is pressed while the focus is in the search field parameters passed are text and link
-  enterResultCallback: undefined, // callback on what should happen when enter is pressed while the focus is on one of the suggests, default: undefined, meaning the link will be followed
-  typeCallback: undefined, // callback on keydown events in the search box
-  focusCallback: undefined, // callback on focus events on the search box
-  blurCallback: undefined, // callback on blur events on the search box
-  minChars: 3, // minimum number of characters before the suggests shows, default: 3
-  maxWidth: 400, // the maximum width of the suggest box, default: as wide as the input box
-  suggestOrder: [], // the order of the suggest, e.g. ["recipes","menus","restaurants"]
-  suggestSelectionOrder: [], // the order of the suggest, e.g. ["recipes","menus","restaurants"],
-  showMoreResults: undefined,    // the HTML content to show if there is another more complete search page
-  disableEventPropagationHtml: true  // disable click event propagation from search (suggest) box to html elements
+sxQuery("#searchBox").unibox({
+// these are the required:
+suggestUrl: '', // the URL where to get the search suggests
+// these are optional:
+ivfImagePath: '', // the root path to the instant visual feedback images
+ivfImageOffset: -80, // the vertical offset of the ivf images
+missingErrorImage: undefined, // if an image is missing, hide it (undefined) or show a placeholder image
+queryVisualizationHeadline: '', // the headline of the query visualization
+highlight: true, // whether the search words should be highlighted in the results
+throttleTime: 50, // the number of ms before the update of the search box is triggered
+animationSpeed: 300, // general animation speed
+instantVisualFeedback: 'all', // where to show the ivf
+showOnMobile: true, // whether to show search suggestions on mobile devices
+callbacks: {
+    enter: undefined, // the callback to trigger after 'enter' press or search button click (when no suggestion is selected) - args(query, searchButton [optional], hideSpecialCallback [optional])
+    enterResult: undefined, // the callback to trigger after 'enter' press or click on selected suggestion - args(query, href, hasCtrlModifier [optional])
+    type: undefined, // the callback to trigger after search box value changes - args(event, query)
+    focus: undefined, // the callback to trigger after search box is focused - args(event, query)
+    blur: undefined, // the callback to trigger after search box is abandoned - args(event, query)
+    line: undefined, // the callback to trigger after suggest line is built - args(lineString, key, index, suggest)
+    suggestsBuilt: undefined, // the callback to trigger after all suggestions are built - args(suggestBox, data)
+    preSuggest: undefined, // the callback to trigger before suggestions are fetched, return 'false' to interrupt the process  - args(query, searchBox)
+    suggestChange: undefined // the callback to trigger after the suggestion set is changed - args(isSuggestBoxVisible)
+},
+trackingCallbacks: {
+    abandon: undefined, // a tracking callback, called after the search box is abandoned - args(query, visible suggestionCount, searchBox)
+    select: undefined, // a tracking callback, called after a suggestion is selected - args(searchBox, suggestBox, target, query, suggestions, position, link)
+    show: undefined, // a tracking callback, called after a suggestion set is shown - args(searchBox, suggestBox, aSuggestion, query, suggestions)
+    change: undefined // a tracking callback, called after a search box value is changed - args(searchBox)
+},
+placeholder: undefined, // the placeholder for the input field
+extraHtml: undefined, // extra HTML code that is shown in each search suggest
+dataPoints: undefined, // extra HTML code by key, overrides extraHtml, e.g. {price: {html: '<span>#price# $</span>', position: 1}, category: {html: '<b>#category#</b>', position: 2}}
+noSuggests: undefined, // the content to show when no suggests are available, if undefined, no suggests will be shown
+emptyQuerySuggests: undefined, // empty query suggests, if someone clicks in the search field, we can show suggests
+minChars: 3, // the minimum input before the suggest pops up
+maxWidth: 'auto', // the maximum width of the suggest box, default: as wide as the input box
+showDeleteAllButton: false, // show 'delete all' (x) button when focus hits back to input field
+showImagesSuggestions: true, // whether to show images
+disableEventPropagationHtml: true, // disable click event propagation to HTML element
+suggestOrder: [], // sort suggests by this array, if empty, use given array order
+suggestSelectionOrder: [], // move through selectables by this cluster order. if empty, use naturally given order by selectables
+viewAllLabel: undefined, // label of the 'View All' button, if undefined no 'View All' button will be shown at the bottom of suggestion list
+loaderSelector: undefined, // the loader element selector
+viewKeyMappings: undefined, // mapping of suggestion group key to view key
+themeColor: '#1C5D7D', // theme color, used for magnifier icon when using 'View All' button
+enabled: true, // whether suggestions should be shown
+specialMobileSuggest: {
+    enabled: false,  // whether to show fullscreen search box + suggest box on search field focus when the viewport width is below specified breakpoint, default: false
+    breakpoint: 768, // the maximum width of device, where special mobile suggestion should be shown, default: 768 px
+    placeholder: undefined, // html/string to be shown when there are no suggest results in special mobile suggest box
+    customTopHtml: undefined,  // html/string to be shown at the top of the page when special mobile suggests are visible
+    searchBoxPlaceholder: undefined, // the placeholder to show in mobile suggestion search box
+    animateTransitions: true, // whether to animate transition into special mobile suggestions
+    resizeSearchBoxOnScroll: true, // whether to resize mobile special input block (search field + icons) on special mobile suggest box scroll
+    trigger: undefined, // selector for special mobile suggest trigger, if the trigger is clicked, the fullscreen suggestion layer will be shown
+    autoHide: true, // whether to hide the mobile layer automatically on search submission, if set to false, the enterCallback becomes a hideLayer callback as 3rd parameter, which has to be called in order to hide the mobile suggestions
+    hiddenCallback: undefined // a callback that is called after the special mobile suggestions have been hidden
+},
+accessibility: {
+    headingLevel: 2, // the level of search suggestion heading
+    searchFieldLabel: "Search", // the invisible label of the input fields
+    srSuggestionsHiddenText: "Search suggestions are hidden", // text to announce @screen reader when search suggestions were hidden
+    srNoSuggestionsText: 'No search suggestions', // text to announce @screen reader if no suggestions are available
+    srSuggestionsCountText: '#COUNT# search suggestions shown', // text to announce @screen reader after search suggestions have been shown, #COUNT# will be replaced with the suggestion count
+    srOneSuggestionText: 'One search suggestion shown', // text to announce @screen reader after search suggestions have been shown
+    srSuggestBoxControlDescription: 'Use up and down arrows to select available result. Press enter to go to selected search result. Touch devices users can use touch and swipe gestures.', // text to announce @screen reader after search input is focused - describes keyboard controls
+},
+searchBoxContainer: searchBox.parent() // the search box's parent
 });
 ```
 
@@ -93,12 +135,12 @@ That's it already. If you use unibox and want to let me know, I include your usa
 #### Multi UniBoxes
 If you want to initialize more that one UniBox in the same page you can wrap the initialization function in an event that triggers when the user switches between input boxes , such as focus 
 ```javascript
-$(".usernameBox").focus(function(){
-          $(".usernameBox").unibox({
+sxQuery(".usernameBox").focus(function(){
+          sxQuery(".usernameBox").unibox({
               suggestUrl: 'path to your server-side', // the URL that provides the data for the suggest
       });
-$(".emailBox").focus(function(){
-          $(".emailBox").unibox({
+sxQuery(".emailBox").focus(function(){
+          sxQuery(".emailBox").unibox({
               suggestUrl: 'path to your server-side', // the URL that provides the data for the suggest
       });
 ```

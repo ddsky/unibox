@@ -1603,6 +1603,12 @@
     
         // a callback for on blur events on the search box
         var blurCallback;
+
+        // a callback when the search has started
+        var loadingCallback;
+
+        // a callback when the search has finished
+        var loadedCallback;
     
         // a callback called after the suggestion block is built (and not rendered yet), takes the suggestion box and server response as arguments
         var suggestsBuiltCallback;
@@ -2481,6 +2487,12 @@
             }
     
             if (inputText.length >= minChars && suggestUrl != '' && (showOnMobile || _sxQuery2.default.matchesMediaQuery("min", 768))) {
+
+                var self = this;
+                if (loadingCallback) {
+                    loadingCallback.call(self, event);
+                }
+
                 currentInput = inputText;
                 var lInputText = inputText;
                 _sxQuery2.default.ajax({
@@ -2489,6 +2501,10 @@
                     dataType: 'json',
                     success: function success(data) {
                         if (lInputText == currentInput) {
+                            if (loadedCallback) {
+                                loadedCallback.call(self, this, data);
+                            }
+
                             updateSuggestBox(data);
                         }
                         lastData = data;
@@ -3055,6 +3071,8 @@
                 typeCallback = options.callbacks.type;
                 focusCallback = options.callbacks.focus;
                 blurCallback = options.callbacks.blur;
+                loadingCallback = options.callbacks.loading;
+                loadedCallback = options.callbacks.loaded;
                 suggestsBuiltCallback = options.callbacks.suggestsBuilt;
                 trackingCallbacks = options.trackingCallbacks || {};
                 placeholder = options.placeholder;

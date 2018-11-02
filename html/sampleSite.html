@@ -21,11 +21,6 @@
                 padding: 20px;
                 position: relative;
             }
-            #head form {
-                /*style="position:absolute;left: 10px"*/
-                /*position:absolute;*/
-                /*left: 10px;*/
-            }
             #searchInput {
                 width: 350px;
             }
@@ -43,6 +38,7 @@
 
         <div id="main">
             <div id="head">
+                <h1>Unibox Demo</h1>
                 <form>
                     <input id="searchInput" class="s" type="text" placeholder="My search..." />
                     <input type="submit" value="search" />
@@ -76,17 +72,19 @@
             </div>
         </div>
 
-        <!-- Here comes our unibox configuration -->
+        <!-- unibox configuration -->
         <script>
             var boxes = [];
 
             sxQuery(document).ready(function() {
 
                 var settings = {
-                    // these are required:
-                    suggestUrl: 'http://yourserver.com/suggests?query=', // the URL that provides the data for the suggest
+                    // REQUIRED
+                    suggestUrl: 'https://global.sitesearch360.com/sites/suggest?site=fairshopping.online&limit=10&maxQuerySuggestions=50&query=', // the URL that provides the data for the suggest -> this is just an example
+                    // suggestUrl: 'http://yourserver.com/suggests?query=', // the URL that provides the data for the suggest
                     ivfImagePath: 'http://yourserver.com/images/ivf/', // the base path for instant visual feedback images
-                    // these are optional:
+
+                    // OPTIONAL
                     instantVisualFeedback: 'all', // where the instant visual feedback should be shown, 'top', 'bottom', 'all', or 'none', default: 'all'
                     throttleTime: 100, // the number of milliseconds before the suggest is triggered after finished input, default: 300ms
                     extraHtml: undefined, // extra HTML code that is shown in each search suggest
@@ -119,11 +117,7 @@
                 // apply the settings to an input that should get the unibox
                 // apply to multiple boxes
                 boxes = sxQuery(".s").unibox(settings);
-
             });
-
         </script>
-
-
     </body>
 </html>

@@ -1,19 +1,24 @@
 unibox
 ======
 
-A Javascript Plugin for a universal search box with search suggestion.
+A Javascript Plugin for a universal search box with search suggestion without dependencies.
+
+[Demo](https://github.com/ddsky/unibox/blob/master/html/sampleSite.html?raw=true)
 
 ## How it Looks Like
 
 Example on the [meal planner site](https://spoonacular.com/meal-planner) spoonacular. Here you can see the instant visual feedback (images showing how you understood the query) within the search suggest.
 
-![](https://github.com/ddsky/unibox/blob/master/img/unibox-on-spoonacular.png?raw=true "unibox on spoonacular")
+![](https://github.com/ddsky/unibox/blob/master/img/spoonacular-unibox.png?raw=true "unibox on spoonacular")
 
-Example on the [semantic product search engine semknox.com](http://semknox.com) (not public). Here, the instant visual feedback is shown prominently above the query.
+Example on the [semantic product search engine semknox.com](https://semknox.com) (not public). Here, the instant visual feedback is shown prominently above the query.
 
-![](https://github.com/ddsky/unibox/blob/master/img/unibox-on-semfox.png?raw=true "unibox on semfox")
+![](https://github.com/ddsky/unibox/blob/master/img/unibox-on-semknox.png?raw=true "unibox on SEMKNOX")
 
-Also unibox is now used by [site search](http://sitesearch360.com) provider Site Search 360.
+Also unibox is now used by [site search](https://www.sitesearch360.com) provider Site Search 360. Here's a sample implementation.
+
+![](https://github.com/ddsky/unibox/blob/master/img/sitesearch360-unibox.gif?raw=true "unibox on Site Search 360")
+
 
 ## Installation
 

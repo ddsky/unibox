@@ -3,7 +3,7 @@ unibox
 
 A Javascript Plugin for a universal search box with search suggestion without dependencies.
 
-[Demo](https://github.com/ddsky/unibox/blob/master/html/sampleSite.html?raw=true)
+[Demo](https://htmlpreview.github.io/?https://github.com/ddsky/unibox/blob/master/html/sampleSite.html)
 
 ## How it Looks Like
 

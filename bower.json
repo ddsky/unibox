@@ -1,6 +1,6 @@
 {
   "name": "unibox",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": [
     "js/unibox.min.js",
     "css/unibox.min.css"
@@ -23,7 +23,8 @@
   },
   "authors": [
     "David Urbansky <davidurbansky@gmail.com>",
-    "Simon Schabel"
+    "Simon Schabel",
+    "Jaroslav Vankat"
   ],
   "description": "A search suggest plugin.",
   "keywords": [

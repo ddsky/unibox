@@ -1,6 +1,6 @@
 {
   "name": "unibox",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A powerful search suggestion input box.",
   "main": "unibox.js",
   "scripts": {
@@ -16,6 +16,10 @@
     "autocomplete"
   ],
   "author": "David Urbansky",
+  "contributors": [
+    {"name": "Jaroslav Vankat"},
+    {"name": "Simon Schabel"},
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ddsky/unibox/issues"

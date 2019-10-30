@@ -1843,7 +1843,7 @@
     
             var markers = {};
             _sxQuery2.default.each(words, function (idx, word) {
-                if (word.length < 1) {
+                if (word.length < 4) {
                     return;
                 }
                 var matches = string.match(new RegExp("((" + word + ")(?!#<##|-\\d+#<##))(?!.*\\1)", 'gi'));

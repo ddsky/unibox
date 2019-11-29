@@ -1,4 +1,16 @@
-.unibox-sr-only {
+/****
+ Media Queries
+ ****/
+/****
+ Animations
+ ****/
+/****
+ Transformations
+ ****/
+/****
+ Flexbox
+ ****/
+ .unibox-sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -22,8 +34,11 @@
   color: #333;
   overflow: hidden;
   z-index: 1500;
-}
-
+  /* Links, texts */
+  /* Other */
+  /***
+     Modifiers 
+     ***/ }
   #unibox-suggest-box a, #unibox-suggest-box-special a {
     text-decoration: none;
     color: #1C5D7D; }
@@ -38,6 +53,13 @@
     padding: 6px 8px; }
   #unibox-suggest-box .unibox-selectable:hover a, #unibox-suggest-box .unibox-selectable.active a, #unibox-suggest-box-special .unibox-selectable:hover a, #unibox-suggest-box-special .unibox-selectable.active a {
     color: #fff; }
+  #unibox-suggest-box.unibox--fullwidth, #unibox-suggest-box-special.unibox--fullwidth {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    left: 0 !important; }
+    #unibox-suggest-box.unibox--fullwidth .unibox-selectable, #unibox-suggest-box-special.unibox--fullwidth .unibox-selectable {
+      padding: 1em; }
 
 /****
  Mobile Unibox Layer
@@ -132,7 +154,6 @@ section#unibox-special {
     ***/
   clear: both;
   position: relative;
-  font-family: sans-serif;
   font-size: 14px;
   text-align: left;
   display: flex;
@@ -145,7 +166,8 @@ section#unibox-special {
   .unibox-selectable .unibox-selectable-img-container {
     width: 60px;
     float: left;
-    margin-right: 6px; }
+    margin-right: 6px;
+    text-align: center; }
   .unibox-selectable img {
     max-width: 60px;
     max-height: 60px; }
@@ -161,7 +183,9 @@ section#unibox-special {
     margin-top: 5px;
     margin-bottom: 15px; }
   .unibox-selectable .unibox-extra {
-    cursor: default; }
+    position: absolute;
+    top: 25px;
+    left: 75px; }
   .unibox-selectable .unibox-ca {
     clear: both; }
   .unibox-selectable.active, .unibox-selectable:hover {
@@ -170,6 +194,10 @@ section#unibox-special {
     cursor: pointer; }
     .unibox-selectable.active a, .unibox-selectable.active span, .unibox-selectable.active .unibox-extra, .unibox-selectable:hover a, .unibox-selectable:hover span, .unibox-selectable:hover .unibox-extra {
       color: #fff; }
+
+#unibox-suggest-box.unibox--fullwidth .unibox-extra {
+  top: calc(25px + 1em);
+  left: calc(70px + 1em); }
 
 /****
  Invisible

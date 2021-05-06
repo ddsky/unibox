@@ -2927,7 +2927,7 @@ var UniBox = function UniBox() {
       return;
     }
 
-    var currentQuery = searchBox.val();
+    var currentQuery = searchBox.val().replaceAll("\"", "&quot;");
     var inputFieldString = "<input type=\"search\" id=\"unibox-special-searchbox\" class=\"unibox-special-searchbox\" value=\"".concat(currentQuery, "\" ") + 'autocomplete="off" role="combobox" aria-describedby="unibox-controls-description" aria-owns="unibox-suggest-box-special" aria-controls="unibox-suggest-box-special" ' + 'aria-expanded="false"/>';
     var specialSuggestBoxString = "<div id=\"unibox-suggest-box-special\" class=\"unibox-special-box\">".concat(specialMobileSuggestPlaceholder, "</div>");
     var searchButtonString = '<button id="unibox-mobile-search-btn" class="unibox-special-searchbutton unibox-special-icon" aria-label="Search"></button>';
